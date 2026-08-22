@@ -29,19 +29,21 @@ def E (k r : Int) : Int :=
 def negOnePowInt (n : Int) : Int :=
   if n % 2 = 0 then 1 else -1
 
-/-- The A-cone contribution to `B_N`, including the outer minus sign. -/
+/-- The A-cone contribution to the manuscript coefficient `B_N`, including
+its outer minus sign. -/
 def ACoeff (N : Nat) : Int :=
   ((Finset.range (N + 1) ×ˢ Finset.range (2 * N + 2)).filter
     (fun p => E (↑p.1) (↑p.2) = ↑N)).sum
     (fun p => -negOnePowInt (↑p.2))
 
-/-- The D-cone contribution to `B_N` in translated natural coordinates. -/
+/-- The D-cone contribution to the manuscript coefficient `B_N`, after
+writing `k = -(i+1)` and `r = -(j+1)` with natural coordinates `i,j`. -/
 def DCoeff (N : Nat) : Int :=
   ((Finset.range (N + 1) ×ˢ Finset.range (2 * N + 2)).filter
     (fun p => E (-(↑p.1 + 1)) (-(↑p.2 + 1)) = ↑N)).sum
     (fun p => negOnePowInt (-(↑p.2 + 1)))
 
-/-- The manuscript coefficient `B_N`: D-cone sum minus A-cone sum. -/
+/-- The manuscript coefficient `B_N`: the D-cone sum minus the A-cone sum. -/
 def BCoeff (N : Nat) : Int := DCoeff N + ACoeff N
 
 /-! ## Golden integers and the geometric sector invariant -/
@@ -71,7 +73,7 @@ def norm (x : PhiInt) : Int := x.a ^ 2 + x.a * x.b - x.b ^ 2
 /-- Galois conjugation. -/
 def star (x : PhiInt) : PhiInt := ⟨x.a + x.b, -x.b⟩
 
-/-- The fundamental totally positive unit `eps = 1 + phi = phi^2`, of norm one. -/
+/-- The fundamental totally positive unit `1 + phi = phi^2`, of norm one. -/
 def eps : PhiInt := ⟨1, 1⟩
 
 end PhiInt
@@ -80,26 +82,27 @@ end PhiInt
 def toF4 (x : PhiInt) : ZMod 2 × ZMod 2 :=
   (↑x.a, ↑x.b)
 
-/-- The exponent label of the three nonzero mod-two residue classes;
-the zero class is totalized to `0`. -/
+/-- The discrete-log label on the three nonzero mod-two residues, with the
+zero residue `(0,0)` totalized to `0`. -/
 def discreteLog (x : ZMod 2 × ZMod 2) : ZMod 3 :=
   if x = (1, 0) then 0
   else if x = (1, 1) then 1
   else if x = (0, 1) then 2
   else 0
 
-/-- A sector residue label in `ZMod 3`, indexed by `x`;
-this structure alone does not certify a geometric lift. -/
+/-- A `ZMod 3` label indexed by `x`. This record carries no geometric lift or
+normalization proof; those are supplied only by `GeometricSectorCert`. -/
 structure SectorCert (x : PhiInt) where
   δ : ZMod 3
 
-/-- The corresponding totalized mod-two residue label of a golden integer;
-on nonzero reduction it is the discrete logarithm to base `eps`. -/
+/-- The mod-two discrete-log residue label `discreteLog (toF4 x)`, totalized
+to `0` when `toF4 x = (0,0)`. -/
 def lambdaOf (x : PhiInt) : ZMod 3 := discreteLog (toF4 x)
 
-/-- The formal sector-minus-residue value `c.δ - lambdaOf x` in `ZMod 3`.
-For labels obtained from a geometric certificate at an admissible prime,
-the selected theorem relates value `1` to coefficient magnitude `2`. -/
+/-- The formal difference `c.δ - lambdaOf x` in `ZMod 3`. Its coefficient-
+magnitude interpretation is used only when `c` comes from a
+`GeometricSectorCert x` for an element `x` of norm `-p`, with `p` prime and
+`p % 10 = 1`. -/
 def iotaCert (x : PhiInt) (c : SectorCert x) : ZMod 3 :=
   c.δ - lambdaOf x
 
@@ -135,7 +138,9 @@ def epsZPowMul : Int → PhiInt → PhiInt
   | Int.ofNat n, x => epsNatMul n x
   | Int.negSucc n, x => epsInvNatMul (n + 1) x
 
-/-- Association by a signed norm-one unit. -/
+/-- The explicit signed fundamental-unit orbit relation: `y = eps^m x` or
+`y = -(eps^m x)`.
+Despite the local name, this is not a principal-ideal equality predicate. -/
 def sameIdeal (x y : PhiInt) : Prop :=
   ∃ (m : Int) (negative : Bool),
     y = match negative with

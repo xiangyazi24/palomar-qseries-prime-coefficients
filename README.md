@@ -32,7 +32,7 @@ Lean declarations registered here.
 
 ## Registered statement surface
 
-`Challenge.lean` imports only Mathlib and is 192 lines. It contains the public
+`Challenge.lean` imports only Mathlib and is 203 lines. It contains the public
 definitions and three theorem statements selected by `comparator.json`:
 
 - `PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness`;
