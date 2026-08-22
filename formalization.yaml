@@ -34,7 +34,7 @@ sources:
     id: "doi:10.1142/S1793042110003150"
     type: paper
     location: "https://doi.org/10.1142/S1793042110003150"
-    relationship: builds-on
+    relationship: background
     note: >-
       Chan's tenth-order dissection supplies the motivating q-series context.
       No source-faithfulness theorem from that project to BCoeff is registered.

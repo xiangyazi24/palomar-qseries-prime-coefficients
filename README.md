@@ -13,7 +13,8 @@ snapshot in `paper/`.
 
 ## Registered statement surface
 
-`Challenge.lean` states two results:
+`PalomarQseriesPrimeCoefficients/Public.lean` defines the Mathlib-only public
+surface, and `Challenge.lean` states two results over it:
 
 - `BCoeff_not_multiplicative_witness` is the unconditional closed theorem
   `BCoeff 34 != BCoeff 1 * BCoeff 3` for the explicitly defined coefficient
@@ -35,7 +36,9 @@ internal closure but is not a separate registered target.
 
 ## Repository map
 
-- `Challenge.lean`: Mathlib-only statement and certificate surface.
+- `PalomarQseriesPrimeCoefficients/Public.lean`: shared Mathlib-only
+  coefficient and certificate surface.
+- `Challenge.lean`: the two public theorem statements over that surface.
 - `Solution.lean`: explicit type transports and proofs from the extracted
   closure.
 - `QseriesFormalization/`: the fifteen-file substantive proof closure.

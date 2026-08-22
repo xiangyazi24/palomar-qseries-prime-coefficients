@@ -5,27 +5,6 @@
     "PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness",
     "PalomarQseriesPrimeCoefficients.prime_coeff_classification"
   ],
-  "definition_names": [
-    "PalomarQseriesPrimeCoefficients.triZ",
-    "PalomarQseriesPrimeCoefficients.E",
-    "PalomarQseriesPrimeCoefficients.negOnePowInt",
-    "PalomarQseriesPrimeCoefficients.ACoeff",
-    "PalomarQseriesPrimeCoefficients.DCoeff",
-    "PalomarQseriesPrimeCoefficients.BCoeff",
-    "PalomarQseriesPrimeCoefficients.PhiInt.norm",
-    "PalomarQseriesPrimeCoefficients.PhiInt.star",
-    "PalomarQseriesPrimeCoefficients.toF4",
-    "PalomarQseriesPrimeCoefficients.discreteLog",
-    "PalomarQseriesPrimeCoefficients.lambdaOf",
-    "PalomarQseriesPrimeCoefficients.iotaCert",
-    "PalomarQseriesPrimeCoefficients.reflectedSectorCert",
-    "PalomarQseriesPrimeCoefficients.Contributes",
-    "PalomarQseriesPrimeCoefficients.AAtoms",
-    "PalomarQseriesPrimeCoefficients.DAtoms",
-    "PalomarQseriesPrimeCoefficients.AAtomWeight",
-    "PalomarQseriesPrimeCoefficients.DAtomWeight",
-    "PalomarQseriesPrimeCoefficients.atomCount"
-  ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true
 }
