@@ -1,0 +1,115 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Prime coefficients of a nonmultiplicative indefinite theta series"
+  description: >-
+    A Lean 4 verification of an unconditional finite nonmultiplicativity
+    witness and a conditional finite-certificate classification of prime-index
+    coefficients for an indefinite theta series over Q(sqrt(5)).
+  authors:
+    - "Xiang Huang"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Xiang Huang"
+
+classification:
+  arxiv: [math.NT]
+  msc2020: [11F27, 11R11]
+
+sources:
+  - title: "Prime magnitudes and nonvanishing for a nonmultiplicative indefinite theta series over Q(sqrt(5))"
+    authors:
+      - "Xiang Huang"
+    type: paper
+    relationship: formalizes
+    note: >-
+      The registered declarations formalize the closed nonmultiplicativity
+      witness and the finite conditional coefficient classifier. Uniform prime
+      certificate construction, geometric sector results, and density
+      asymptotics remain manuscript mathematics outside the registered scope.
+  - title: "Ramanujan's cubic continued fraction and an analog of his most beautiful identity"
+    authors:
+      - "Hei-Chi Chan"
+    id: "doi:10.1142/S1793042110003150"
+    type: paper
+    location: "https://doi.org/10.1142/S1793042110003150"
+    relationship: builds-on
+    note: >-
+      Chan's tenth-order dissection supplies the motivating q-series context.
+      No source-faithfulness theorem from that project to BCoeff is registered.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Comparator checks two declarations. The first proves the closed inequality
+    BCoeff(34) != BCoeff(1) * BCoeff(3). The second proves four-valuedness of
+    BCoeff((p-1)/10) from an explicit SplitPrimeCert, a ZMod-3 SectorCert label,
+    and a PrimeAtomCertificate containing the stated finite sign, atom-bound,
+    and contribution-to-existence fields.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: [propext, Classical.choice, Quot.sound]
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude", "ChatGPT", "OpenAI Codex"]
+      framework: "Lean 4 with remote build and multi-model review"
+      tool_setup: >-
+        AI-assisted proof development, statement comparison, explicit
+        structure transport, dependency auditing, clean Linux builds, and
+        axiom inspection under human direction.
+      cost:
+        wall_time: "not reconstructed"
+        spend_usd: "subscription-based"
+        hardware: "Mac mini orchestration and uisai2 Linux verification"
+      prompting_notes: >-
+        Agents proposed and reviewed proof steps; every retained declaration
+        is checked by Lean and the advertised theorem surface is axiom-audited.
+  spend_usd: "subscription-based"
+  notes: >-
+    The submission record retains only claims supported by the pinned public
+    source and Comparator result.
+
+fidelity:
+  divergences: >-
+    The prime classifier is conditional on supplied certificate records. In
+    particular, SectorCert contains only a ZMod-3 label, while
+    PrimeAtomCertificate supplies sign coherence, a two-atom bound, and both
+    atom-existence implications. The formalization does not construct these
+    records uniformly for primes, formalize geometric sector membership,
+    prove the manuscript's magnitude-two iff iota-one criterion through this
+    endpoint, establish Hecke--Mitsui density asymptotics, or prove a
+    source-faithful bridge from Chan's missing-kernel expression to BCoeff.
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "OpenAI Codex"
+  notes: >-
+    The extracted closure, manuscript, and public Challenge/Solution surface
+    are undergoing exact-commit independent review before publication.
+
+alignment:
+  namespace: "PalomarQseriesPrimeCoefficients"
+  statements:
+    - source: "Paper, Theorem: Nonmultiplicativity"
+      lean: "PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness"
+      module: "Challenge"
+      status: proved
+      note: >-
+        Uses the actual finite coefficient function at indices 1, 3, and 34;
+        it is not the older scalar integer inequality.
+    - source: "Paper, conditional finite prime-coefficient classifier"
+      lean: "PalomarQseriesPrimeCoefficients.prime_coeff_classification"
+      module: "Challenge"
+      status: proved
+      note: >-
+        Proves membership in {-2,-1,1,2} only after all three dependent
+        certificate arguments are supplied.
+
+acknowledgements: >-
+  Mathlib and Lean provide the formal foundation. Chan's q-series identity
+  supplies the motivating dissection context.

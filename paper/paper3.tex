@@ -1,0 +1,1272 @@
+\documentclass[12pt]{amsart}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage[margin=1.1in]{geometry}
+\usepackage[
+  pdftitle={Prime magnitudes and nonvanishing for a nonmultiplicative indefinite theta series over Q(sqrt(5))},
+  pdfauthor={Xiang Huang}
+]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\N}{N}
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\FF}{\mathbb{F}}
+\newcommand{\OK}{\mathcal{O}_K}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\ph}{\varphi}
+\newcommand{\Acone}{\mathcal{A}}
+\newcommand{\Dcone}{\mathcal{D}}
+\newcommand{\Sector}{\mathcal{S}}
+
+\title[Prime magnitudes of a nonmultiplicative theta series]
+{Prime magnitudes and nonvanishing for a nonmultiplicative\\
+indefinite theta series over $\QQ(\sqrt5)$}
+\author{Xiang Huang}
+\date{}
+
+\begin{document}
+
+\begin{abstract}
+We study an independently defined norm-supported cone series
+$B(q)=\sum_{N\geq0}B_Nq^N$ over $\QQ(\sqrt5)$.  Its coefficients are
+signed counts of points in two quadrants of an affine lattice coset,
+and the norm parametrization is
+$-\N(\beta(k,r))=10E(k,r)+1$.  The sequence is not multiplicative:
+with $a(M)=B_{(M-1)/10}$ one has
+$a(11)a(31)=-2\neq3=a(341)$.  Nevertheless its values at rational
+primes are rigid.  For every prime $p\equiv1\pmod{10}$ we construct a
+three-valued ideal invariant
+\[
+  \iota(\mathfrak p)=\delta(\pi)-\lambda(\pi)\in\ZZ/3\ZZ,
+\]
+where $\delta$ is an archimedean sector index and $\lambda$ is the
+discrete logarithm of $\pi$ in the group
+$(\OK/2\OK)^\times\simeq\FF_4^\times$.  The invariant combines an
+archimedean sector label with a congruence label; we do not identify it
+with a finite ray-class character.  We prove a reflection identity, an
+exact one-atom lemma, and a sign-coherence lemma,
+yielding
+\[
+  B_{(p-1)/10}\in\{-2,-1,1,2\},
+  \qquad
+  |B_{(p-1)/10}|=2\iff\iota(\mathfrak p)=1.
+\]
+In particular the prime coefficients never vanish.  A specialization
+of the Hecke--Mitsui prime number theorem to twelve joint
+sector--congruence cells gives
+\[
+ \#\{p\leq X:p\equiv1\pmod{10},\ |B_{(p-1)/10}|=2\}
+ =\frac1{12}\operatorname{Li}(X)+o(X/\log X)
+\]
+and the corresponding count for magnitude $1$ is
+$\frac16\operatorname{Li}(X)+o(X/\log X)$.  Thus the relative
+densities are $1/3$ and $2/3$.  The finite
+algebraic and combinatorial certificate consumers are machine-checked
+in Lean~4; the construction of the global certificates and the
+Hecke--Mitsui analytic input are not part of the formalization.
+\end{abstract}
+
+\maketitle
+
+%----------------------------------------------------------------------
+\section{Introduction}\label{sec:intro}
+%----------------------------------------------------------------------
+
+The Andrews--Dyson--Hickerson and Cohen identities connect
+real-quadratic norm sums with Maass waveforms and multiplicative
+coefficients \cite{jADH88,jCo88,jCo95}.  In several standard examples,
+the defining lattice or coset is stable under the fundamental totally
+positive unit, so the element sum descends to a Hecke-character sum
+over ideals and multiplicativity follows.  This mechanism occurs in
+the original construction over $\QQ(\sqrt6)$
+\cite{jADH88,jCo88}, the $\QQ(\sqrt2)$ example of
+Corson--Favero--Liesinger--Zubairy \cite{jCFLZ04}, Lovejoy's
+overpartition series \cite{jLo04}, the multiplicative
+$q$-hypergeometric families of Bringmann--Kane \cite{jBrKa11}, and
+the double sums of Lovejoy--Osburn \cite{jLO13,jLoOs15}.  The series
+considered here has the same broad norm-supported shape, but its
+defining coset is \emph{not} unit-stable: it does not descend to a
+single Hecke-character sum over ideals, and its coefficients are not
+multiplicative.  The resulting nontrivial unit phase is the structural
+feature studied below; no priority claim is needed for our arguments.
+
+Let
+\[
+  K=\QQ(\sqrt5),
+  \qquad
+  \OK=\ZZ[\ph],
+  \qquad
+  \ph=\frac{1+\sqrt5}{2},
+  \qquad
+  \eps=\ph^2=\ph+1.
+\]
+The unit $\ph$ has norm $-1$, while $\eps$ is the fundamental totally
+positive unit.  We define an affine coset $L\subset\OK$, a bijection
+$\beta:\ZZ^2\to L$, and a cone-difference series $B$.  The paper has
+three main goals:
+\begin{enumerate}
+\item prove directly that the classical multiplicative mechanism is
+unavailable and give an explicit multiplicativity counterexample;
+\item classify the magnitudes of all coefficients at primes
+$p\equiv1\pmod{10}$ and prove nonvanishing;
+\item prove the absolute prime-counting asymptotics, and hence the
+relative densities $1/3$ and $2/3$, using joint
+sector-and-congruence equidistribution of prime elements.
+\end{enumerate}
+
+The definition of the finite invariant combines an archimedean sector
+index with a congruence index.  We do not prove that it factors through
+a finite ray-class quotient, and we do not use such a factorization.
+The density argument is instead formulated in terms of a joint
+sector-and-congruence prime-element asymptotic of Hecke--Mitsui type
+\cite{jHe20,jMi56,oKai22}.
+
+Here is the main result.  The invariant $\iota$ is defined in
+Section~\ref{sec:iota}.
+
+\begin{theorem}[Prime classification and density]\label{thm:main}
+For a rational prime $p\equiv1\pmod{10}$, put
+\[
+  a(p):=B_{(p-1)/10}.
+\]
+(These are the only primes that occur: the norm identity represents
+exactly the values $10N+1$, so $p=5$ and the inert primes
+$p\equiv\pm3\pmod{10}$ never appear, and the primes
+$p\equiv9\pmod{10}$ split in $\QQ(\sqrt5)$ but are not of the form
+$10N+1$ and hence never enter the indexing.)
+Then:
+\begin{enumerate}
+\item $a(p)\in\{-2,-1,1,2\}$, so $a(p)\neq0$;
+\item for either prime ideal $\mathfrak p\mid p$,
+\[
+  |a(p)|=2\quad\Longleftrightarrow\quad
+  \iota(\mathfrak p)=1;
+\]
+\item if $P_2(X)$ and $P_1(X)$ count the primes $p\leq X$,
+$p\equiv1\pmod{10}$, for which $|a(p)|$ is respectively $2$ and $1$,
+then
+\[
+  P_2(X)=\frac1{12}\operatorname{Li}(X)
+    +o\!\left(\frac{X}{\log X}\right),
+  \qquad
+  P_1(X)=\frac16\operatorname{Li}(X)
+    +o\!\left(\frac{X}{\log X}\right).
+\]
+Consequently the relative densities are $1/3$ and $2/3$.
+\end{enumerate}
+\end{theorem}
+
+The series was suggested by calculations around Chan's dissection of
+$\Theta_{10}$ \cite{jCh10,oCh11}.  The present paper deliberately
+starts from the independent definition of $B$ in
+Definition~\ref{def:B}.  A row-model factorization motivated that
+definition and has been checked through a finite coefficient range,
+but we do not claim here a source-faithful theorem identifying Chan's
+missing kernel with $B$; no result below depends on such an
+identification.
+
+Section~\ref{sec:algebra} gives the lattice and norm formulas.
+Section~\ref{sec:units} studies the unit action and proves
+nonmultiplicativity.  Sections~\ref{sec:sectors} and \ref{sec:iota}
+construct the sector--residue invariant.  Section~\ref{sec:prime}
+proves the one-atom and sign-coherence lemmas and derives prime
+nonvanishing.  Section~\ref{sec:density} derives the density statement
+from its explicitly isolated analytic input.
+Section~\ref{sec:verification} records computational and formalization
+scope.
+
+%----------------------------------------------------------------------
+\section{The lattice, cones, and norm parametrization}
+\label{sec:algebra}
+%----------------------------------------------------------------------
+
+\subsection{Basic arithmetic of the quadratic field}
+
+The conjugate of $\ph$ is $\bar\ph=1-\ph$.  For
+$\alpha=a+b\ph\in\OK$,
+\[
+  \bar\alpha=(a+b)-b\ph,
+  \qquad
+  \Tr(\alpha)=2a+b,
+  \qquad
+  \N(\alpha)=a^2+ab-b^2.
+\]
+The two real embeddings are denoted by
+\[
+  \sigma_1(a+b\ph)=a+b\ph,
+  \qquad
+  \sigma_2(a+b\ph)=a+b\bar\ph.
+\]
+
+\begin{lemma}[Class number one]\label{lem:class-number-one}
+The ordinary and narrow class numbers of $K$ are both one.
+\end{lemma}
+
+\begin{proof}
+The discriminant of $K$ is $5$.  Minkowski's bound in degree two says
+that every ideal class contains an integral ideal of norm at most
+\[
+  \frac{2!}{2^2}\sqrt5=\frac{\sqrt5}{2}<2.
+\]
+The norm of a nonzero integral ideal is a positive integer, so the
+representative has norm $1$ and is $\OK$.  Hence the ordinary class
+number is one.  Since $\ph$ has norm $-1$, every principal ideal has a
+generator with either prescribed sign pattern, and the narrow class
+number is also one.
+\end{proof}
+
+\begin{lemma}[Splitting of the relevant primes]\label{lem:splitting}
+Every rational prime $p\equiv1\pmod{10}$ splits as
+$p\OK=\mathfrak p\bar{\mathfrak p}$ with two distinct principal prime
+ideals of norm $p$.
+\end{lemma}
+
+\begin{proof}
+Such a prime is odd and is not $5$.  Quadratic reciprocity gives
+\[
+  \left(\frac{5}{p}\right)=\left(\frac{p}{5}\right)=1
+\]
+because $p\equiv1\pmod5$.  Thus $p$ splits in $K$.  Principality
+follows from Lemma~\ref{lem:class-number-one}.
+\end{proof}
+
+\subsection{The affine coset and the exponent}
+
+\begin{definition}\label{def:L}
+Define
+\[
+  L:=\{a+b\ph\in\OK:b-3a\equiv1\pmod{10}\}.
+\]
+This is a translate of the index-$10$ sublattice
+\[
+  L_0:=\{a+b\ph:b-3a\equiv0\pmod{10}\}.
+\]
+\end{definition}
+
+\begin{definition}\label{def:beta-E}
+For $k,r\in\ZZ$, define
+\[
+  \beta(k,r):=(r-2k)+(4k+3r+1)\ph
+\]
+and
+\[
+  H(k,r):=4k^2+2k+r^2+(6k+1)r,
+  \qquad
+  E(k,r):=\frac{H(k,r)}2.
+\]
+Define the two cones
+\[
+  \Acone:=\{(k,r)\in\ZZ^2:k\geq0,\ r\geq0\},
+  \qquad
+  \Dcone:=\{(k,r)\in\ZZ^2:k<0,\ r<0\}.
+\]
+\end{definition}
+
+\begin{lemma}[Integrality and cone nonnegativity]\label{lem:E}
+For every $k,r\in\ZZ$, the integer $H(k,r)$ is even, so
+$E(k,r)\in\ZZ$.  Moreover $E(k,r)\geq0$ on
+$\Acone\cup\Dcone$.
+\end{lemma}
+
+\begin{proof}
+We have
+\[
+  H(k,r)=r(r+1)+2k(2k+1)+6kr,
+\]
+a sum of two even products and an even multiple.  Hence $H$ is even.
+If $(k,r)\in\Acone$, then
+\[
+  E(k,r)=2k^2+k+3kr+\frac{r(r+1)}2\geq0.
+\]
+If $(k,r)\in\Dcone$, write $k=-m-1$ and $r=-s-1$ with
+$m,s\geq0$.  Then
+\[
+  E(-m-1,-s-1)
+  =2m^2+6m+4+3ms+3s+\frac{s(s+1)}2\geq0.
+\]
+No nonnegativity assertion is made outside the two cones.
+\end{proof}
+
+\begin{proposition}[Bijection and norm identity]\label{prop:beta-norm}
+The map $\beta:\ZZ^2\to L$ is a bijection.  Its inverse is
+\[
+  k=\frac{b-3a-1}{10},
+  \qquad
+  r=a+2k
+\]
+for $a+b\ph\in L$.  Furthermore,
+\[
+  -\N(\beta(k,r))=10E(k,r)+1.
+\]
+\end{proposition}
+
+\begin{proof}
+For $\beta(k,r)=a+b\ph$,
+\[
+  b-3a-1
+  =(4k+3r+1)-3(r-2k)-1=10k,
+\]
+so $\beta(k,r)\in L$.  The displayed inverse formulas are integral for
+an element of $L$ and recover $k,r$, proving bijectivity.  Substituting
+$a=r-2k$ and $b=4k+3r+1$ into
+$\N(a+b\ph)=a^2+ab-b^2$ gives
+\[
+  \N(\beta(k,r))=-10E(k,r)-1.
+\]
+\end{proof}
+
+\begin{definition}[The cone series]\label{def:B}
+For $N\geq0$, define
+\[
+  B_N:=
+  \sum_{\substack{(k,r)\in\Dcone\\E(k,r)=N}}(-1)^r
+  -
+  \sum_{\substack{(k,r)\in\Acone\\E(k,r)=N}}(-1)^r,
+  \qquad
+  B(q):=\sum_{N\geq0}B_Nq^N.
+\]
+For later use, define the contribution of a single atom by
+\[
+  w(k,r):=
+  \begin{cases}
+    -(-1)^r,&(k,r)\in\Acone,\\
+    (+1)(-1)^r,&(k,r)\in\Dcone,\\
+    0,&\text{otherwise}.
+  \end{cases}
+\]
+\end{definition}
+
+\begin{lemma}[Finiteness of coefficients]\label{lem:finite}
+For every $N\geq0$, both sums in Definition~\ref{def:B} are finite.
+\end{lemma}
+
+\begin{proof}
+On $\Acone$ the expression in Lemma~\ref{lem:E} gives
+$2k^2+k\leq N$ and $r(r+1)/2\leq N$.  Hence $k$ and $r$ are bounded.
+On $\Dcone$, the formula with $k=-m-1$, $r=-s-1$ gives
+$2m^2\leq N$ and $s(s+1)/2\leq N$, so $m$ and $s$ are bounded.
+\end{proof}
+
+\begin{corollary}[Norm support]\label{cor:norm-support}
+If $B_N\neq0$, then $10N+1$ is the norm of an algebraic integer of
+$K$.
+\end{corollary}
+
+\begin{proof}
+A nonzero coefficient contains an atom $\beta(k,r)$ of norm
+$-(10N+1)$.  Multiplication by $\ph$, whose norm is $-1$, changes this
+to norm $10N+1$.
+\end{proof}
+
+\begin{remark}[Provenance]
+The row-model factorization that motivated $B$ was verified
+coefficient-by-coefficient through $N=2048$.  This finite check is not
+a theorem identifying the original missing kernel with $B$, and the
+proof of the present paper does not use it.
+\end{remark}
+
+%----------------------------------------------------------------------
+\section{Unit action and nonmultiplicativity}\label{sec:units}
+%----------------------------------------------------------------------
+
+The congruence defining $L$ has one component modulo $2$ and one
+component modulo the ramified prime $\sqrt5$.
+
+\begin{lemma}[Two congruence descriptions of $L$]\label{lem:L-CRT}
+For $\alpha=a+b\ph\in\OK$, the following are equivalent:
+\begin{enumerate}
+\item $\alpha\in L$;
+\item
+\[
+  \alpha\equiv3\pmod{\sqrt5\OK}
+  \quad\text{and}\quad
+  \alpha\bmod2\in\{1,\ph\}\subset\FF_4^\times.
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Modulo $\sqrt5$ one has $\ph\equiv3\pmod5$, so
+\[
+  \alpha\equiv a+3b\pmod{\sqrt5}.
+\]
+If $c=b-3a$, then $a+3b\equiv3c\pmod5$.  Thus
+$c\equiv1\pmod5$ if and only if
+$\alpha\equiv3\pmod{\sqrt5}$.  Modulo $2$, the condition
+$b-3a\equiv1$ is $a+b\equiv1$, which says that exactly one of $a,b$
+is odd.  These are precisely the residues $1$ and $\ph$ in
+$\OK/2\OK\simeq\FF_4$.  Combining the mod-$2$ and mod-$5$ conditions
+by the Chinese remainder theorem gives the mod-$10$ condition.
+\end{proof}
+
+\begin{proposition}[Unit instability and stabilizer]\label{prop:unit}
+One has
+\[
+  \eps L\cap L=\varnothing.
+\]
+Moreover, for $j\in\ZZ$,
+\[
+  \eps^jL=L\quad\Longleftrightarrow\quad6\mid j.
+\]
+\end{proposition}
+
+\begin{proof}
+Modulo $\sqrt5$, one has
+\[
+  \eps=\ph^2\equiv3^2\equiv-1\pmod5.
+\]
+Thus $\eps$ has order $2$ in the $\sqrt5$ component.  Since every
+element of $L$ is congruent to $3$ modulo $\sqrt5$, multiplication by
+$\eps$ changes that residue to $-3\equiv2$, proving
+$\eps L\cap L=\varnothing$.  More generally, preservation of the
+$\sqrt5$ condition requires $j$ even.
+
+Modulo $2$, the group $\FF_4^\times$ is cyclic of order $3$ and
+$\eps\equiv\ph+1$ is a generator.  The two residues allowed by
+Lemma~\ref{lem:L-CRT} have discrete logarithms $0$ and $2$.  Translation
+of the set $\{0,2\}$ by $j$ preserves it if and only if
+$j\equiv0\pmod3$.  Hence $\eps^jL=L$ exactly when $j$ is divisible by
+both $2$ and $3$, equivalently by $6$.
+\end{proof}
+
+The proposition explains why the standard one-coset descent to ideals
+is unavailable.  It does not by itself prove that the coefficient
+sequence is nonmultiplicative; the following finite witness does.
+
+\begin{theorem}[Nonmultiplicativity]\label{thm:nonmult}
+For $M\equiv1\pmod{10}$ define
+\[
+  a(M):=B_{(M-1)/10}.
+\]
+Then
+\[
+  a(11)=1,
+  \qquad
+  a(31)=-2,
+  \qquad
+  a(341)=3,
+\]
+and therefore
+\[
+  a(11)a(31)=-2\neq3=a(11\cdot31).
+\]
+\end{theorem}
+
+\begin{proof}
+The complete atom lists are
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+$N$ & cone & $(k,r)$ & $(-1)^r$ & contribution to $B_N$\\
+\midrule
+$1$ & $\Acone$ & $(0,1)$ & $-1$ & $+1$\\
+\midrule
+$3$ & $\Acone$ & $(0,2)$ & $+1$ & $-1$\\
+    & $\Acone$ & $(1,0)$ & $+1$ & $-1$\\
+\midrule
+$34$ & $\Acone$ & $(2,3)$ & $-1$ & $+1$\\
+     & $\Dcone$ & $(-1,-6)$ & $+1$ & $+1$\\
+     & $\Dcone$ & $(-3,-2)$ & $+1$ & $+1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+For the A-cone, the inequalities in the proof of
+Lemma~\ref{lem:finite} bound $k$ and $r$ before substitution.  For the
+D-cone, use $k=-m-1$, $r=-s-1$ and the corresponding bounds.  Checking
+those finite ranges gives exactly the displayed solutions.  Summing
+the contributions gives the three values and the claimed inequality.
+\end{proof}
+
+%----------------------------------------------------------------------
+\section{A half-open sector and the cone criterion}\label{sec:sectors}
+%----------------------------------------------------------------------
+
+For a nonzero $\alpha\in K$ of negative norm, define
+\[
+  R(\alpha):=\left|\frac{\sigma_1(\alpha)}{\sigma_2(\alpha)}\right|,
+  \qquad
+  \rho:=\ph^4.
+\]
+Both embeddings of $\eps$ are positive and
+\[
+  R(\eps\alpha)=\rho R(\alpha).
+\]
+We use the half-open fundamental sector
+\[
+  \Sector:=\{\alpha:\sigma_1(\alpha)>0>\sigma_2(\alpha),\
+                  1\leq R(\alpha)<\rho\}.
+\]
+The opposite sector is $-\Sector$.
+
+\begin{lemma}[Prime elements do not lie on sector boundaries]
+\label{lem:no-boundary}
+Let $p\neq5$ be a rational prime and let
+$\alpha\in\OK$ satisfy $\N(\alpha)=-p$.  Then
+$R(\alpha)\neq\rho^j$ for every $j\in\ZZ$.
+\end{lemma}
+
+\begin{proof}
+If $R(\alpha)=\rho^j$, then
+$\gamma=\eps^{-j}\alpha$ has $R(\gamma)=1$.  After replacing
+$\gamma$ by $-\gamma$ if necessary, its embeddings have opposite signs
+and equal absolute value, so $\Tr(\gamma)=0$.  Writing
+$\gamma=a+b\ph$, the equation $2a+b=0$ implies that $b$ is even and
+$\gamma$ is an integral multiple of $\sqrt5$.  Hence
+$\N(\gamma)=-5m^2$, which cannot equal $-p$ for $p\neq5$.
+\end{proof}
+
+\begin{definition}[Sector index]\label{def:delta}
+Let $\alpha\in\OK$ have norm $-p$ for a rational prime $p\neq5$.
+By Lemma~\ref{lem:no-boundary}, there is a unique
+$\delta(\alpha)\in\ZZ$ such that
+\[
+  \rho^{\delta(\alpha)}<R(\alpha)<
+  \rho^{\delta(\alpha)+1}.
+\]
+Equivalently, $\eps^{-\delta(\alpha)}\alpha$ has ratio strictly between
+$1$ and $\rho$.  We use the reduction of $\delta(\alpha)$ modulo $3$
+when forming $\iota$.
+\end{definition}
+
+The half-open convention fixes the boundary allocation in the
+general definition, and Lemma~\ref{lem:no-boundary} shows that no
+relevant prime element is affected by it.
+
+\begin{lemma}[Behavior of the sector index]\label{lem:delta}
+For every $m\in\ZZ$,
+\[
+  \delta(\eps^m\alpha)=\delta(\alpha)+m,
+  \qquad
+  \delta(-\alpha)=\delta(\alpha),
+\]
+and
+\[
+  \delta(\bar\alpha)=-\delta(\alpha)-1.
+\]
+\end{lemma}
+
+\begin{proof}
+The first two identities follow from
+$R(\eps^m\alpha)=\rho^mR(\alpha)$ and $R(-\alpha)=R(\alpha)$.  For
+conjugation, $R(\bar\alpha)=R(\alpha)^{-1}$.  If
+$\rho^d<R(\alpha)<\rho^{d+1}$, then
+\[
+  \rho^{-d-1}<R(\bar\alpha)<\rho^{-d},
+\]
+which gives the last identity.
+\end{proof}
+
+The next proposition is the exact link between the geometric sector
+and the two cones in Definition~\ref{def:beta-E}.
+
+\begin{proposition}[Cone recognition]\label{prop:cone-recognition}
+Let $\alpha=\beta(k,r)$.  Then
+\begin{align*}
+(k,r)\in\Acone
+&\quad\Longleftrightarrow\quad
+\sigma_1(\alpha)>0>\sigma_2(\alpha)
+\ \text{and}\ 1<R(\alpha)<\rho,\\
+(k,r)\in\Dcone
+&\quad\Longleftrightarrow\quad
+\sigma_1(\alpha)<0<\sigma_2(\alpha)
+\ \text{and}\ 1<R(\alpha)<\rho.
+\end{align*}
+\end{proposition}
+
+\begin{proof}
+Write $\alpha=a+b\ph$.  Direct substitution gives
+\[
+  \Tr(\alpha)=2a+b=5r+1
+\]
+and, using $1+\rho=3\ph^2$ and
+$\ph+\rho\bar\ph=-\ph^2$,
+\[
+  \sigma_1(\alpha)+\rho\sigma_2(\alpha)
+  =\ph^2(3a-b)=-\ph^2(10k+1).
+\]
+Suppose first that $\sigma_1(\alpha)>0>\sigma_2(\alpha)$.  Then
+$R(\alpha)>1$ is equivalent to
+$\Tr(\alpha)>0$, hence to $5r+1>0$, which for integral $r$ is
+$r\geq0$.  Likewise $R(\alpha)<\rho$ is equivalent to
+$\sigma_1(\alpha)+\rho\sigma_2(\alpha)<0$, hence to
+$10k+1>0$, which is $k\geq0$.
+
+Conversely, if $k,r\geq0$, then
+\[
+  \beta(k,r)=\ph+2k\sqrt5+r(1+3\ph).
+\]
+Each summand has positive first embedding and negative second
+embedding.  The two displayed linear identities then give
+$1<R(\alpha)<\rho$.
+
+For the D-cone apply the same argument to $-\alpha$.  The inequalities
+become $-(5r+1)>0$ and $10k+1<0$, equivalent to
+$r\leq-1$ and $k\leq-1$.  Conversely, writing
+$k=-m-1$, $r=-s-1$ gives
+\[
+  -\beta(k,r)=(-1+6\ph)+2m\sqrt5+s(1+3\ph),
+\]
+whose summands again have positive first embedding and negative second
+embedding.  This proves the second equivalence.
+\end{proof}
+
+%----------------------------------------------------------------------
+\section{The sector--residue invariant}\label{sec:iota}
+%----------------------------------------------------------------------
+
+Because $2$ is inert in $K$,
+\[
+  \OK/2\OK\simeq\FF_4,
+  \qquad
+  \FF_4^\times=\langle\eps\bmod2\rangle.
+\]
+For $\alpha\not\equiv0\pmod2$, define
+\[
+  \lambda(\alpha)\in\ZZ/3\ZZ
+\]
+by
+\[
+  \alpha\equiv\eps^{\lambda(\alpha)}\pmod2.
+\]
+Thus
+\[
+  \lambda(\eps^m\alpha)=\lambda(\alpha)+m,
+  \qquad
+  \lambda(-\alpha)=\lambda(\alpha).
+\]
+Conjugation on $\FF_4$ is Frobenius, so
+\[
+  \lambda(\bar\alpha)=2\lambda(\alpha).
+\]
+
+\begin{definition}[The invariant $\iota$]\label{def:iota}
+Let $p\equiv1\pmod{10}$ be prime and let
+$\mathfrak p\mid p$.  Choose a generator $\pi$ of $\mathfrak p$ with
+$\N(\pi)=-p$, and define
+\[
+  \iota(\mathfrak p)
+  :=\delta(\pi)-\lambda(\pi)\in\ZZ/3\ZZ.
+\]
+\end{definition}
+
+\begin{proposition}[Well-definedness]\label{prop:iota-wd}
+The value $\iota(\mathfrak p)$ is independent of the chosen generator
+of norm $-p$.
+\end{proposition}
+
+\begin{proof}
+The units of norm $1$ are $\{\pm\eps^m:m\in\ZZ\}$.  Thus another
+generator of norm $-p$ has the form $\pi'=\pm\eps^m\pi$.  By
+Lemma~\ref{lem:delta},
+\[
+  \delta(\pi')=\delta(\pi)+m,
+\]
+while the discrete logarithm satisfies
+\[
+  \lambda(\pi')=\lambda(\pi)+m\pmod3.
+\]
+Their difference is unchanged.
+\end{proof}
+
+\begin{theorem}[Reflection identity]\label{thm:reflection}
+For conjugate prime ideals,
+\[
+  \iota(\bar{\mathfrak p})
+  \equiv-\iota(\mathfrak p)-1\pmod3.
+\]
+\end{theorem}
+
+\begin{proof}
+Use $\bar\pi$ as a generator of $\bar{\mathfrak p}$.  By
+Lemma~\ref{lem:delta},
+$\delta(\bar\pi)=-\delta(\pi)-1$.  In $\FF_4$,
+$\lambda(\bar\pi)=2\lambda(\pi)$.  Hence
+\begin{align*}
+\iota(\bar{\mathfrak p})
+&=(-\delta(\pi)-1)-2\lambda(\pi)\\
+&\equiv-(\delta(\pi)-\lambda(\pi))-1
+ \pmod3.
+\end{align*}
+\end{proof}
+
+\begin{remark}
+The invariant has finite codomain, but its definition uses the
+archimedean sector label $\delta$ as well as a finite congruence label.
+We neither identify it with a ray-class character nor use a
+Chebotarev argument.  Section~\ref{sec:density} instead isolates the
+joint sector-and-congruence equidistribution statement needed below.
+\end{remark}
+
+%----------------------------------------------------------------------
+\section{Prime atoms, uniqueness, and sign coherence}\label{sec:prime}
+%----------------------------------------------------------------------
+
+We first translate membership in $L$ into the normalized sector data.
+
+\begin{lemma}[Normalization into $L$]\label{lem:normalization}
+Let $p\equiv1\pmod{10}$ be prime, let $\mathfrak p\mid p$, and let
+$\pi$ generate $\mathfrak p$ with $\N(\pi)=-p$.  Put
+\[
+  \pi_0:=\eps^{-\delta(\pi)}\pi.
+\]
+Exactly one of $\pi_0$ and $-\pi_0$ is congruent to $3$ modulo
+$\sqrt5$.  Denote that choice by $\alpha$.  Then
+\[
+  \alpha\in L
+  \quad\Longleftrightarrow\quad
+  \iota(\mathfrak p)\in\{0,1\}.
+\]
+When this holds, $\alpha=\beta(k,r)$ for a point in
+$\Acone\cup\Dcone$.
+\end{lemma}
+
+\begin{proof}
+Modulo $\sqrt5$, conjugation is trivial, so
+$\N(\pi_0)\equiv\pi_0^2$.  Since
+$\N(\pi_0)=-p\equiv-1\equiv4\pmod5$, the residue of $\pi_0$ is
+$2$ or $3$.  Exactly one sign therefore gives residue $3$.
+
+The sector normalization gives $1<R(\alpha)<\rho$ by
+Lemma~\ref{lem:no-boundary}.  Its discrete logarithm is
+\[
+  \lambda(\alpha)
+  =\lambda(\pi)-\delta(\pi)
+  =-\iota(\mathfrak p)\pmod3.
+\]
+By Lemma~\ref{lem:L-CRT}, membership in $L$ is equivalent to the
+already imposed residue $3$ modulo $\sqrt5$ together with
+$\lambda(\alpha)\in\{0,2\}$.  The latter condition is equivalent to
+$\iota(\mathfrak p)\in\{0,1\}$.  If $\alpha\in L$, write
+$\alpha=\beta(k,r)$ by Proposition~\ref{prop:beta-norm}; then
+Proposition~\ref{prop:cone-recognition} places $(k,r)$ in the A- or
+D-cone according to the sign pattern of the embeddings.
+\end{proof}
+
+\begin{theorem}[The unique bad class]\label{thm:bad-class}
+A prime ideal $\mathfrak p\mid p$ contributes an atom to
+$B_{(p-1)/10}$ if and only if
+\[
+  \iota(\mathfrak p)\neq2.
+\]
+\end{theorem}
+
+\begin{proof}
+This is exactly Lemma~\ref{lem:normalization}: the contributing classes
+are $0$ and $1$, while class $2$ fails the mod-$2$ condition defining
+$L$.
+\end{proof}
+
+The next result supplies the multiplicity statement needed in the
+prime theorem.
+
+\begin{lemma}[One atom per contributing prime ideal]
+\label{lem:one-atom}
+Let $p\equiv1\pmod{10}$ be prime and let $\mathfrak p\mid p$.  Among
+all pairs $(k,r)\in\Acone\cup\Dcone$ for which
+\[
+  (\beta(k,r))=\mathfrak p,
+  \qquad
+  \N(\beta(k,r))=-p,
+\]
+there is at most one.  If $\iota(\mathfrak p)\neq2$, there is exactly
+one.
+\end{lemma}
+
+\begin{proof}
+Existence for $\iota(\mathfrak p)\neq2$ is
+Lemma~\ref{lem:normalization}.  For uniqueness, suppose
+$\alpha=\beta(k,r)$ and $\alpha'=\beta(k',r')$ are two such atoms.
+They generate the same ideal and have the same norm, so
+\[
+  \alpha'=\pm\eps^m\alpha
+\]
+for some $m\in\ZZ$.  Proposition~\ref{prop:cone-recognition} gives
+\[
+  1<R(\alpha)<\rho,
+  \qquad
+  1<R(\alpha')<\rho.
+\]
+But
+$R(\alpha')=\rho^mR(\alpha)$, and two numbers in the same interval of
+multiplicative width $\rho$ can satisfy this only when $m=0$.
+Therefore $\alpha'=\pm\alpha$.
+
+Both elements lie in $L$, hence both are congruent to $3$ modulo
+$\sqrt5$ by Lemma~\ref{lem:L-CRT}.  Negation changes that residue to
+$-3\equiv2$, so $\alpha'=-\alpha$ is impossible.  Thus
+$\alpha'=\alpha$, and bijectivity of $\beta$ gives
+$(k',r')=(k,r)$.
+\end{proof}
+
+When both conjugate prime ideals contribute, their two atoms cannot
+cancel.  The proof gives an explicit coordinate relation.
+
+\begin{lemma}[Sign coherence]\label{lem:sign-coherence}
+Let $p\equiv1\pmod{10}$ be prime.  Suppose both
+$\mathfrak p$ and $\bar{\mathfrak p}$ contribute atoms to
+$B_{(p-1)/10}$.  If $\alpha=\beta(k,r)$ is the atom belonging to
+$\mathfrak p$, then the atom belonging to $\bar{\mathfrak p}$ is
+\[
+  \alpha'=-\eps\bar\alpha
+          =\beta\left(\frac r2,2k\right).
+\]
+In particular $r$ is even, the two atom coordinates lie in the same
+cone, and their contributions to $B_{(p-1)/10}$ have the same sign.
+\end{lemma}
+
+\begin{proof}
+If both ideals contribute, Theorem~\ref{thm:bad-class} and the
+reflection identity leave only the pair of classes
+\[
+  \iota(\mathfrak p)=\iota(\bar{\mathfrak p})=1.
+\]
+For the normalized atom $\alpha$, the sector index is $0$, so
+\[
+  \lambda(\alpha)=-\iota(\mathfrak p)=2\pmod3.
+\]
+Thus $\alpha\equiv\eps^2\equiv\ph\pmod2$.  If
+$\alpha=a+b\ph$, this says that $a$ is even and $b$ is odd.  Since
+$a=r-2k$, the integer $r$ is even.
+
+Set $\alpha'=-\eps\bar\alpha$.  It generates
+$\bar{\mathfrak p}$ and has norm $-p$.  Modulo $\sqrt5$, conjugation
+fixes the residue, $\eps\equiv-1$, and $\alpha\equiv3$, hence
+\[
+  \alpha'\equiv-(-1)\cdot3\equiv3\pmod{\sqrt5}.
+\]
+Modulo $2$, conjugation is Frobenius.  Since
+$\alpha\equiv\eps^2$, one has
+$\bar\alpha\equiv(\eps^2)^2=\eps$, and therefore
+$\alpha'\equiv\eps^2\pmod2$.  Lemma~\ref{lem:L-CRT} gives
+$\alpha'\in L$.
+
+Furthermore,
+\[
+  R(\alpha')=R(\eps\bar\alpha)=\frac{\rho}{R(\alpha)},
+\]
+which lies strictly between $1$ and $\rho$.  Hence $\alpha'$ is an
+atom by Proposition~\ref{prop:cone-recognition}; uniqueness follows
+from Lemma~\ref{lem:one-atom}.
+
+It remains to compute its coordinates.  Since
+\[
+  \bar\alpha=(a+b)-b\ph,
+\]
+multiplication by $\eps$ and negation give
+\[
+  -\eps\bar\alpha=-a+(b-a)\ph.
+\]
+Applying the inverse formulas of Proposition~\ref{prop:beta-norm},
+\[
+  k'=\frac{(b-a)-3(-a)-1}{10}
+     =\frac{2a+b-1}{10}=\frac r2,
+  \qquad
+  r'=-a+2k'=2k.
+\]
+If $(k,r)$ is in the A-cone, then $(r/2,2k)$ is in the A-cone; if it
+is in the D-cone, then $(r/2,2k)$ is in the D-cone.  Both $r$ and
+$r'=2k$ are even.  Thus both internal signs $(-1)^r$ equal $+1$, and
+because the cone is the same, Definition~\ref{def:B} assigns the same
+outer sign to both atoms.
+\end{proof}
+
+\begin{theorem}[Prime magnitudes and nonvanishing]
+\label{thm:prime-classification}
+For every prime $p\equiv1\pmod{10}$ and either
+$\mathfrak p\mid p$,
+\[
+  B_{(p-1)/10}\in\{-2,-1,1,2\},
+\]
+and
+\[
+  \left|B_{(p-1)/10}\right|=2
+  \quad\Longleftrightarrow\quad
+  \iota(\mathfrak p)=1.
+\]
+In particular $B_{(p-1)/10}\neq0$.
+\end{theorem}
+
+\begin{proof}
+Let $i=\iota(\mathfrak p)$.  By Theorem~\ref{thm:reflection}, the
+ordered pair of classes of the two conjugate ideals is
+\[
+  (0,2),\quad(1,1),\quad\text{or}\quad(2,0).
+\]
+Theorem~\ref{thm:bad-class} says that class $2$ contributes no atom and
+classes $0,1$ contribute.  Lemma~\ref{lem:one-atom} says that each
+contributing ideal contributes exactly one atom.  Thus in the first
+and third cases exactly one atom occurs, so the magnitude is $1$.  In
+the middle case two atoms occur, and Lemma~\ref{lem:sign-coherence}
+shows that they have the same sign, so the magnitude is $2$.  The
+middle case is exactly $i=1$.  In all cases at least one atom occurs
+and no cancellation to zero is possible.
+\end{proof}
+
+%----------------------------------------------------------------------
+\section{Density from Hecke--Mitsui equidistribution}
+\label{sec:density}
+%----------------------------------------------------------------------
+
+We now prove the analytic part of Theorem~\ref{thm:main}.  We keep
+prime ideals and prime elements separate, since the Hecke--Mitsui
+theorem naturally counts prime elements in an archimedean region with
+a simultaneous finite congruence condition.
+
+Recall that
+\[
+  \OK^\times=\{\pm\ph^n:n\in\ZZ\},
+  \qquad \eps=\ph^2,
+\]
+that the norm-one units are $\{\pm\eps^m:m\in\ZZ\}$, and that the
+totally positive units are $\{\eps^m:m\in\ZZ\}$.  For every nonzero
+prime ideal $\mathfrak p$ not above $2$ or $5$, let
+$\pi_{\mathfrak p}$ be the unique generator satisfying
+\[
+  \N(\pi_{\mathfrak p})=-\N(\mathfrak p),
+  \qquad
+  \sigma_1(\pi_{\mathfrak p})>0>
+  \sigma_2(\pi_{\mathfrak p}),
+  \qquad
+  1\leq R(\pi_{\mathfrak p})<\rho.
+\]
+Class number one first gives a generator.  Multiplication by $\ph$ if
+necessary makes its norm negative, and multiplication by $-1$ fixes
+the sign pattern.  The remaining associates preserving both choices
+are exactly $\eps^m\pi_{\mathfrak p}$.  Since
+$R(\eps^m\alpha)=\rho^mR(\alpha)$, the half-open interval selects a
+unique one.  By Lemma~\ref{lem:no-boundary}, a prime element on a
+boundary ray generates the prime above $5$; away from that prime we
+may use the open inequalities $1<R<\rho$.
+
+Put
+\[
+  \mathfrak m=(2\sqrt5)=2\sqrt5\,\OK.
+\]
+The ideals $(2)$ and $(\sqrt5)$ are coprime.  Since $2$ is inert and
+$5$ is ramified, the Chinese remainder theorem gives
+\[
+  (\OK/\mathfrak m)^\times
+  \simeq (\OK/2\OK)^\times\times
+         (\OK/\sqrt5\OK)^\times
+  \simeq \FF_4^\times\times\FF_5^\times,
+  \qquad
+  \#(\OK/\mathfrak m)^\times=12.
+\]
+For $\ell\in\ZZ/3\ZZ$ and $s\in\FF_5^\times$, let
+$u_{\ell,s}\in(\OK/\mathfrak m)^\times$ be the unique class with
+\[
+  u_{\ell,s}\equiv\eps^\ell\pmod{2\OK},
+  \qquad
+  u_{\ell,s}\equiv s\pmod{\sqrt5\OK}.
+\]
+Let $\widetilde\Pi_{\ell,s}(X)$ count prime ideals
+$\mathfrak p\nmid\mathfrak m$ of norm at most $X$ whose canonical
+generator satisfies
+$\pi_{\mathfrak p}\equiv u_{\ell,s}\pmod{\mathfrak m}$.
+
+\begin{theorem}[Hecke--Mitsui input, specialized]
+\label{thm:mitsui-special}
+For every $\ell\in\ZZ/3\ZZ$ and every $s\in\FF_5^\times$,
+\[
+  \widetilde\Pi_{\ell,s}(X)
+  =\frac1{12}\operatorname{Li}(X)
+   +o\!\left(\frac{X}{\log X}\right).
+\]
+The same asymptotic holds after restricting to degree-one prime
+ideals.
+\end{theorem}
+
+\begin{proof}
+Mitsui's generalized prime number theorem gives simultaneous
+archimedean and reduced-congruence equidistribution of prime elements;
+see \cite{jMi56}, Corollary and Theorem on p.~35.  For the precise
+modern form used here, see Kai's thin-cone theorem
+\cite[Corollary~4.2.3]{oKai22}.  Apply it with the fixed modulus
+$\mathfrak m$ and the open fundamental sector
+\[
+  \sigma_1(\pi)>0>\sigma_2(\pi),
+  \qquad 1<R(\pi)<\rho.
+\]
+Partition its projectivized interval into finitely many sufficiently
+small open thin-cone charts and sum.  The boundary contains no prime
+element away from the prime above $5$, by the preceding normalization.
+
+For each reduced class $u\in(\OK/\mathfrak m)^\times$, the resulting
+logarithmically weighted count has the form
+\[
+  \Theta_u(X)=C X+o(X),
+\]
+where $C$ is independent of $u$.  Kai's refinement includes a
+possible exceptional-zero secondary term; because the modulus is
+fixed, it is $O(X^\beta)$ for a fixed $\beta<1$ and hence is $o(X)$.
+The canonical-generator normalization identifies the union over all
+twelve reduced classes with the prime ideals away from
+$\mathfrak m$.  Summing over those classes and applying the prime
+ideal theorem gives $12C=1$.  Thus $C=1/12$, and partial summation
+gives the displayed asymptotic.
+
+Finally, in a quadratic field every prime ideal of residue degree two
+and norm at most $X$ lies over a rational prime at most $\sqrt X$.
+There are $O(\sqrt X/\log X)$ such ideals, so deleting them does not
+change the main term.
+\end{proof}
+
+For a degree-one prime ideal $\mathfrak p$ of norm $p$, the canonical
+generator has $\N(\pi_{\mathfrak p})=-p$.  Conjugation is trivial
+modulo $\sqrt5$, so if
+$\pi_{\mathfrak p}\equiv s\pmod{\sqrt5}$, then
+\[
+  -p\equiv\N(\pi_{\mathfrak p})
+      \equiv\pi_{\mathfrak p}^{2}
+      \equiv s^2\pmod5.
+\]
+Consequently the degree-one prime ideals above rational primes
+$p\equiv1\pmod{10}$ are precisely the six selected cells
+\[
+  \ell\in\ZZ/3\ZZ,
+  \qquad s\in\{2,3\}.
+\]
+The nonzero mod-$2$ component makes the norm odd, while $s=2,3$ is
+equivalent to $s^2\equiv-1\pmod5$.  Conversely, both prime ideals
+above every $p\equiv1\pmod{10}$ have canonical generators in these
+six cells.
+
+\begin{proposition}[Equal distribution of $\iota$ on prime ideals]
+\label{prop:iota-density}
+Let $I_i(X)$ count degree-one prime ideals of norm at most $X$ above
+rational primes $p\equiv1\pmod{10}$ and satisfying
+$\iota=i\in\ZZ/3\ZZ$.  Then
+\[
+  I_i(X)=\frac16\operatorname{Li}(X)
+  +o\!\left(\frac{X}{\log X}\right)
+  \qquad(i=0,1,2).
+\]
+In particular each value of $\iota$ has relative density $1/3$ among
+these prime ideals.
+\end{proposition}
+
+\begin{proof}
+For the canonical generator $\pi_{\mathfrak p}$, the sector index is
+$0$, so
+\[
+  \iota(\mathfrak p)=-\lambda(\pi_{\mathfrak p})\pmod3.
+\]
+For each fixed $\ell$ there are exactly two selected cells, namely
+$s=2$ and $s=3$.  Theorem~\ref{thm:mitsui-special} gives
+$\frac1{12}\operatorname{Li}(X)$ for each cell, hence
+$\frac16\operatorname{Li}(X)$ for each value of $\iota=-\ell$.
+\end{proof}
+
+\begin{theorem}[Rational-prime densities]\label{thm:density}
+Let $P_2(X)$ and $P_1(X)$ count rational primes $p\leq X$ with
+$p\equiv1\pmod{10}$ for which respectively
+\[
+  \left|B_{(p-1)/10}\right|=2
+  \qquad\text{and}\qquad
+  \left|B_{(p-1)/10}\right|=1.
+\]
+Then
+\[
+  P_2(X)=\frac1{12}\operatorname{Li}(X)
+  +o\!\left(\frac{X}{\log X}\right),
+\]
+and
+\[
+  P_1(X)=\frac16\operatorname{Li}(X)
+  +o\!\left(\frac{X}{\log X}\right).
+\]
+Consequently, relative to rational primes $p\equiv1\pmod{10}$,
+\[
+  \operatorname{dens}\left(
+    \left|B_{(p-1)/10}\right|=2\right)=\frac13,
+  \qquad
+  \operatorname{dens}\left(
+    \left|B_{(p-1)/10}\right|=1\right)=\frac23.
+\]
+\end{theorem}
+
+\begin{proof}
+Every such rational prime has exactly two conjugate prime ideals.
+The reflection map on classes is
+\[
+  i\longmapsto-i-1,
+\]
+so it pairs $0$ with $2$ and fixes $1$.  By
+Theorem~\ref{thm:prime-classification}, magnitude $2$ occurs exactly
+for the conjugate class pair $(1,1)$, whereas magnitude $1$ occurs for
+$(0,2)$ or $(2,0)$.  Consequently
+\[
+  I_1(X)=2P_2(X)+O(1).
+\]
+Proposition~\ref{prop:iota-density} gives
+\[
+  P_2(X)=\frac1{12}\operatorname{Li}(X)
+  +o\!\left(\frac{X}{\log X}\right).
+\]
+A magnitude-$1$ prime has one class-$0$ and one class-$2$ ideal, so
+\[
+  I_0(X)=I_2(X)=P_1(X)+O(1),
+\]
+which gives the second asymptotic.  Equivalently,
+\[
+  \#\{p\leq X:p\equiv1\pmod{10}\}
+  =\frac14\operatorname{Li}(X)
+   +o\!\left(\frac{X}{\log X}\right).
+\]
+Dividing the two magnitude counts by this total gives the relative
+densities $1/3$ and $2/3$.
+\end{proof}
+
+Theorems~\ref{thm:prime-classification} and \ref{thm:density} prove
+Theorem~\ref{thm:main}.
+
+%----------------------------------------------------------------------
+\section{Computational checks and Lean scope}\label{sec:verification}
+%----------------------------------------------------------------------
+
+\subsection{Computational checks}
+
+A direct termwise comparison of the two defining cones, signs, and
+exponents gives the exact identification, in Hickerson--Mortenson
+notation \cite{jHiMo14},
+$B=-f_{1,3,4}(X,-X^3,X)$.  The coefficient implementation was also
+checked through $N=200$.  The following statements are computational
+checks, not additional inputs to the proofs above.  The ranges and
+counts below are reproduced by the repository script
+\texttt{numerical\_audit.py}.
+
+\begin{itemize}
+\item The motivating row-model factorization has been verified
+coefficient-by-coefficient through $N=2048$.  This computation is not
+used as a source-faithful identification with Chan's missing kernel.
+\item The prime classification has been checked for all $19{,}617$
+primes $p\equiv1\pmod{10}$ with
+$p\leq1{,}000{,}001$ (equivalently $(p-1)/10\leq100{,}000$).
+No zero occurs in that exact range.
+\item The explicit values at $11$, $31$, and $341$ are proved in
+Theorem~\ref{thm:nonmult}; they are not being used merely as numerical
+evidence.
+\item The one-atom and sign-coherence lemmas were additionally
+verified by direct ideal-level enumeration for every prime
+$p\equiv1\pmod{10}$ with $p<20{,}000$ (and sampled up to $10^6$):
+each contributing prime ideal received exactly one cone atom, and
+paired contributions always carried equal signs.  In particular the
+cases $p=11,31,41,61,71,101$ can be checked by hand.
+\item Nonmultiplicativity is systematic: among the coprime pairs of
+distinct primes $p<q$, $p,q\equiv1\pmod{10}$, with
+$pq\leq10^6+1$ ($7165$ pairs),
+none satisfies $a(pq)=a(p)a(q)$.
+\item Through $N\leq10^5$ one has $\max_N|B_N|=7$, and among the
+indices in that range at which $10N+1$ is a norm there are $4904$
+with $B_N=0$, all of them composite values of $10N+1$; empirically
+$|B_N|=O(d(10N+1))$.
+\end{itemize}
+
+\subsection{Lean scope}
+
+The accompanying Lean~4 development has no admitted lemmas in the
+finite algebraic and combinatorial layer it covers.  It checks the
+integer-coordinate algebra for $E$ and $\beta$, the norm identity, the
+coset congruences, the unit calculations
+($\eps L\cap L=\varnothing$, the $\eps^6$ stabilizer), the finite
+$\FF_4^\times$ arithmetic of $\lambda$ including the Frobenius half
+of the reflection identity, the mod-3 obstruction underlying
+nonvanishing (relative to sector labels, which enter the development
+as certificate inputs rather than as proved geometric facts), the
+explicit nonmultiplicativity witness $B_1=1$, $B_3=-2$, $B_{34}=3$,
+the resulting theorem
+\texttt{BCoeff\_not\_multiplicative\_witness}, and the completeness of three
+explicitly bounded atom enumerations.  The
+coefficient $B_{34}$ is checked by kernel evaluation; all of these results
+depend only on Lean's usual three axioms.
+
+{\sloppy
+Machine-checked additionally, in the modules
+\texttt{Ch10\_ConeRecognition}, \texttt{Ch10\_OneAtom},
+\texttt{Ch10\_SignCoherence}, and \texttt{Ch10\_PrimeBridge}
+(built on the project server with only the standard three axioms): the
+integral coordinate-sign form of the cone-recognition identities, the
+one-atom lemma in associate form (two cone atoms that are associates
+by $\pm\eps^m$ coincide), the conjugate-atom identity
+$-\eps\bar\alpha=\beta(r/2,2k)$ with its involution,
+cone-preservation, and evenness statements, and the bridge from atom
+counts to the coefficients --- the classification
+$a(p)\in\{-2,-1,1,2\}$ and nonvanishing, relative to explicit
+per-prime certificate data.\par}
+
+More precisely, \texttt{SectorCert x} contains only a label
+$\delta\in\ZZ/3\ZZ$; it does not certify the proposition
+\texttt{InSector $\delta$ x}.  A \texttt{SplitPrimeCert p} supplies a
+chosen generator $\pi$, primality and the congruence $p\equiv1\pmod
+{10}$, a norm equation $\N(\pi)=\pm p$, and the nonzero mod-$2$
+condition.  A \texttt{PrimeAtomCertificate} then supplies the common
+atom sign, the two finite sign-coherence fields, the two-atom bound,
+and the implications from a contributing iota class to an actual
+atom.  Lean proves the coefficient classification and nonvanishing
+from these data; it does not construct these certificates uniformly
+for every rational prime.
+
+Once these fields are supplied, the endpoint reduces to finite sign
+coherence, the bounds $1\leq\texttt{atomCount}\leq2$, and the
+coefficient bridge.  The primality and sector labels do not by
+themselves construct the certificate or add a global existence
+theorem.  Thus the Lean result is a conditional finite bookkeeping
+theorem, not a proof of prime nonvanishing without hypotheses.
+
+The following are \emph{not} formalized: the geometric sector theory
+of Section~\ref{sec:sectors} (including the geometric half of the
+reflection identity and the same-ideal-to-associate step, which uses
+class number one), the Hecke--Mitsui prime number theorem, the
+asymptotic density argument of Section~\ref{sec:density}, the uniform
+construction of \texttt{SplitPrimeCert} and
+\texttt{PrimeAtomCertificate} for every relevant prime, and a
+source-faithful bridge from Chan's missing kernel to $B$.  The present
+paper proves the finite algebraic consequences of the supplied
+certificates and keeps the remaining geometric, global-existence, and
+analytic inputs explicit.
+
+%----------------------------------------------------------------------
+\section{Concluding remarks}\label{sec:conclusion}
+%----------------------------------------------------------------------
+
+The series $B$ shows that a norm-supported real-quadratic cone sum can
+retain rigid prime behavior after the standard multiplicative model
+has failed.  The obstruction to the usual descent is visible in the
+unit action on the affine coset: $\eps L$ is disjoint from $L$, and
+only $\eps^6$ stabilizes the full coset.  The explicit
+$11\cdot31$ calculation proves nonmultiplicativity, while the unit
+calculation explains why the classical one-coset construction is
+unavailable.
+
+At primes, the replacement for the unavailable one-coset Hecke
+character model is the
+sector--residue invariant $\iota$.  Its reflection law gives the three
+possible conjugate class pairs.  The one-atom lemma turns each
+good ideal into exactly one lattice point, and sign coherence prevents
+the pair in class $(1,1)$ from cancelling.  This yields nonvanishing
+and the two possible magnitudes.  The specialized joint
+prime-element theorem gives the exact density of each of the twelve
+sector--congruence cells.  The six cells over primes
+$p\equiv1\pmod{10}$ are therefore equidistributed, and explicit
+two-ideal bookkeeping transfers the resulting counts to rational
+primes.
+
+\bibliographystyle{plain}
+\bibliography{master}
+
+\end{document}

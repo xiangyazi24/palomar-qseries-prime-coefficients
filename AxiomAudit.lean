@@ -1,0 +1,4 @@
+import Solution
+
+#print axioms PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness
+#print axioms PalomarQseriesPrimeCoefficients.prime_coeff_classification
