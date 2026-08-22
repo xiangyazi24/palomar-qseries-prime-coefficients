@@ -79,11 +79,10 @@ densities are $1/3$ and $2/3$.  Lean~4 checks the complete algebraic,
 geometric, and finite prime-classification argument: generator
 existence, exact atom counts, sign coherence, and nonvanishing.  The
 specialized Hecke--Mitsui prime-element asymptotic is the
-external analytic input.  Lean also checks the constant propagation from six
-selected-cell asymptotics and two explicit ideal-to-rational-prime pairing
-equalities to the absolute constants $1/12$ and $1/6$, and separately checks
-the arithmetic ratios with the progression constant $1/4$ that give $1/3$
-and $2/3$.
+external analytic input and is not formalized in this public Lean package.
+The constants $1/12$, $1/6$, $1/3$, and $2/3$ are deduced in the manuscript
+from the six selected-cell asymptotics and the two-ideal bookkeeping below;
+no density theorem is part of the Comparator-selected Lean surface.
 \end{abstract}
 
 \maketitle
@@ -954,9 +953,12 @@ necessary makes its norm negative, and multiplication by $-1$ fixes
 the sign pattern.  The remaining associates preserving both choices
 are exactly $\eps^m\pi_{\mathfrak p}$.  Since
 $R(\eps^m\alpha)=\rho^mR(\alpha)$, the half-open interval selects a
-unique one.  By Lemma~\ref{lem:no-boundary}, a prime element on a
-boundary ray generates the prime above $5$; away from that prime we
-may use the open inequalities $1<R<\rho$.
+unique one.  If a prime element lies on a boundary ray, unit-normalizing
+it as in the proof of Lemma~\ref{lem:no-boundary} gives
+$\gamma=m\sqrt5$ with $m\in\ZZ$.  Since $\gamma$ is still a prime
+element, primality forces $|m|=1$, so its principal ideal is the unique
+prime above $5$.  Thus away from that prime we may use the open
+inequalities $1<R<\rho$.
 
 Put
 \[
@@ -1165,7 +1167,8 @@ checked through $N=200$.  The following statements are computational
 checks, not additional inputs to the proofs above.  The aggregate cone and
 prime statistics below---the $19{,}617$ prime sweep, the $7{,}165$ pair
 sweep, the maximum coefficient, and the norm-supported zero count---are
-reproduced by the repository script \texttt{numerical\_audit.py}.  The
+reproduced by the repository script
+\texttt{paper/numerical\_audit.py}.  The
 three separate termwise, row-model, and ideal-level checks use their stated
 finite ranges.
 
@@ -1203,11 +1206,13 @@ algebraic, geometric, or finite prime-classification chain.  For every
 rational prime $p\equiv1\pmod {10}$ it constructs an element of
 $\ZZ[\phi]$ of norm $-p$, using quadratic reciprocity, a finite
 pigeonhole argument, and a sign correction by the fundamental unit.
-It classifies all norm-one units as $\pm\eps^m$, proves the two
-same-ideal classes represented by a generator and its conjugate, and
-constructs the unique integral sector normalization.  It also proves that the
-resulting $\iota$ value is unchanged when the norm-$-p$ generator is
-replaced by another generator in the same ideal class.  The geometric
+It classifies all norm-one units as $\pm\eps^m$, proves that the
+norm-$-p$ elements lie in the two signed fundamental-unit orbits
+represented by a generator and its conjugate, and constructs the unique
+integral sector normalization.  It also proves that the resulting
+generator-level $\iota$ value is unchanged when the norm-$-p$ generator is
+replaced by another element in the same explicitly defined signed
+$\eps$-power orbit.  The geometric
 reflection is formalized with the exact transformed lift
 $-\ell-1$.
 
@@ -1218,22 +1223,30 @@ endpoint.
 
 The finite layer constructs a single finite type containing all cone
 atoms at level $(p-1)/10$.  It proves both directions of the bridge
-between the two ideal classes and the contribution predicate, proves
-that the two conjugate classes are distinct (the exceptional ramified
-prime $5$ being excluded by $p\equiv1\pmod {10}$), and obtains the
-exact indicator formula for the atom count.  The reflected classes
-contribute simultaneously exactly when $\iota=1$.  A coordinate-level
-conjugation theorem then proves equality of the full signed atom
-weights, not merely of their signs.  Consequently Lean proves, from
-only primality and $p\equiv1\pmod {10}$,
+between the two signed fundamental-unit orbit classes and the contribution
+predicate, proves that the two conjugate orbit classes are distinct (the
+exceptional ramified prime $5$ being excluded by
+$p\equiv1\pmod {10}$), and obtains the exact indicator formula for the atom
+count.  The reflected classes contribute simultaneously exactly when the
+geometric generator-level $\iota$ value is $1$.  A coordinate-level
+conjugation theorem then proves equality of the full signed atom weights,
+not merely of their signs.  Consequently Lean proves, from only primality
+and $p\equiv1\pmod {10}$,
 \[
  B_{(p-1)/10}\ne0,\qquad
- B_{(p-1)/10}\in\{-2,-1,1,2\},\qquad
- |B_{(p-1)/10}|=2\iff\iota(\mathfrak p)=1.
+ B_{(p-1)/10}\in\{-2,-1,1,2\}.
 \]
+For every norm-$-p$ generator $x$ and every geometric certificate $c$,
+it also proves the exact magnitude-two equivalence expressed by
+\texttt{prime\_\allowbreak BCoeff\_\allowbreak natAbs\_\allowbreak
+eq\_\allowbreak two\_\allowbreak iff\_\allowbreak iota\_\allowbreak
+one\_\allowbreak unconditional}.
+The paper-level ideal interpretation of that generator invariant is the
+well-definedness statement of Proposition~\ref{prop:iota-wd}.
 The development also checks the explicit nonmultiplicativity witness
 $B_1=1$, $B_3=-2$, $B_{34}=3$ and the theorem
-\texttt{BCoeff\_not\_multiplicative\_witness}.
+\texttt{BCoeff\_\allowbreak not\_\allowbreak multiplicative\_\allowbreak
+witness}.
 
 The axiom audit for these endpoints reports only Lean's standard
 \texttt{propext}, \texttt{Classical.\allowbreak choice}, and
@@ -1241,7 +1254,8 @@ The axiom audit for these endpoints reports only Lean's standard
 there are no project axioms or native-evaluation axioms.  The
 specialized Hecke--Mitsui prime-element theorem used in
 Section~\ref{sec:density} is not presently available in Mathlib and
-remains an explicit analytic hypothesis.  The Lean density module is a
+remains an explicit analytic hypothesis.  A separate module in the broader
+internal Lean development, not included in this public package, is a
 schematic consumer: given $1/12$ asymptotics for the six selected cells
 among the twelve reduced classes, together with the two exact equalities
 identifying the relevant ideal counts with the magnitude-one and

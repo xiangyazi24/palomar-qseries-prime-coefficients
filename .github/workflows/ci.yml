@@ -35,6 +35,8 @@ jobs:
         run: ruby scripts/validate-formalization.rb
       - name: Check the duplicated public statement surface
         run: ./scripts/verify-public-surface.sh
+      - name: Reproduce the paper's aggregate finite computations
+        run: python3 paper/numerical_audit.py
       - name: Detect the repository licence
         run: |
           bundle exec licensee detect LICENSE --json --no-packages --no-readme > "$RUNNER_TEMP/license.json"

@@ -56,9 +56,11 @@ fails unless those two blocks are exactly equal.
 - `PalomarQseriesPrimeCoefficients/Public.lean`: Solution-side copy of the
   public statement definitions.
 - `QseriesFormalization/`: the 28-file transitive proof closure extracted from
-  the canonical internal development at commit
+  the private canonical repository `xiangyazi24/Q-series-and-Chan-s-work` at
+  commit
   `95573179f143e85dfc551d896fe9be6ca472250e`.
-- `paper/`: signed TeX source, bibliography, and compiled 16-page PDF.
+- `paper/`: signed TeX source, bibliography, compiled 16-page PDF, and the
+  dependency-free script reproducing the aggregate finite computations.
 - `comparator.json`: the three compared declarations and permitted axioms.
 - `formalization.yaml`: scope, provenance, automation, fidelity, and review.
 
@@ -73,6 +75,7 @@ Run the full checks on Linux:
 lake exe cache get
 lake build
 lake env lean AxiomAudit.lean
+python3 paper/numerical_audit.py
 ./scripts/verify-public-surface.sh
 ruby scripts/validate-formalization.rb
 ./test/landrun_wrapper_test.sh
