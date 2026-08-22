@@ -3,18 +3,19 @@
 This repository is a fixed, self-contained Palomar snapshot of one formalized
 paper. Changes should preserve the exact correspondence among the manuscript,
 `PalomarQseriesPrimeCoefficients/Public.lean`, `Challenge.lean`,
-`Solution.lean`, `comparator.json`, and the 15-file extracted proof closure.
+`Solution.lean`, `comparator.json`, and the 28-file extracted proof closure.
 
 Before opening a pull request:
 
 1. Explain which paper claim or formal statement changes and why.
-2. Keep the shared public definitions in `Public.lean` and the two registered
+2. Keep the marked public-definition blocks in `Challenge.lean` and
+   `Public.lean` byte-for-byte identical, and keep all three registered
    declarations statement-identical between `Challenge.lean` and
    `Solution.lean`.
 3. Do not add proof `sorry`, custom axioms, `unsafe`, or answer-bearing data to
    the Challenge.
-4. Run the verification commands in `README.md`, including the pinned
-   Comparator check.
+4. Run the verification commands in `README.md`, including the public-surface
+   drift check and pinned Comparator check.
 5. Rebuild the PDF when its TeX source changes and report the exact commit that
    was checked.
 

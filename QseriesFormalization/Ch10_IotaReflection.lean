@@ -20,7 +20,7 @@ def reflectedSectorCert (x : PhiInt) (c : SectorCert x) :
 theorem toF4_star_as_frobenius (x : PhiInt) :
     toF4 (PhiInt.star x) = ((toF4 x).1 + (toF4 x).2, (toF4 x).2) := by
   unfold toF4
-  ext <;> simp [PhiInt.star] <;> ring
+  ext <;> simp [PhiInt.star]
 
 theorem lambdaOf_star (x : PhiInt) (hx : toF4 x ≠ (0, 0)) :
     lambdaOf (PhiInt.star x) = 2 * lambdaOf x := by

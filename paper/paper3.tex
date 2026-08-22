@@ -75,10 +75,15 @@ sector--congruence cells gives
 \]
 and the corresponding count for magnitude $1$ is
 $\frac16\operatorname{Li}(X)+o(X/\log X)$.  Thus the relative
-densities are $1/3$ and $2/3$.  The finite
-algebraic and combinatorial certificate consumers are machine-checked
-in Lean~4; the construction of the global certificates and the
-Hecke--Mitsui analytic input are not part of the formalization.
+densities are $1/3$ and $2/3$.  Lean~4 checks the complete algebraic,
+geometric, and finite prime-classification argument: generator
+existence, exact atom counts, sign coherence, and nonvanishing.  The
+specialized Hecke--Mitsui prime-element asymptotic is the
+external analytic input.  Lean also checks the constant propagation from six
+selected-cell asymptotics and two explicit ideal-to-rational-prime pairing
+equalities to the absolute constants $1/12$ and $1/6$, and separately checks
+the arithmetic ratios with the progression constant $1/4$ that give $1/3$
+and $2/3$.
 \end{abstract}
 
 \maketitle
@@ -967,6 +972,12 @@ $5$ is ramified, the Chinese remainder theorem gives
   \qquad
   \#(\OK/\mathfrak m)^\times=12.
 \]
+This cardinality alone is not a ray-class argument.  Indeed, the
+reduction of $\ph$ has order $3$ modulo $2$ and order $4$ modulo
+$\sqrt5$, hence generates all twelve reduced classes modulo
+$\mathfrak m$.  The equal main terms below come from the joint
+archimedean-sector and finite-congruence theorem, where the unit group
+acts diagonally; the canonical sector fixes the unit ambiguity.
 For $\ell\in\ZZ/3\ZZ$ and $s\in\FF_5^\times$, let
 $u_{\ell,s}\in(\OK/\mathfrak m)^\times$ be the unique class with
 \[
@@ -1002,9 +1013,14 @@ $\mathfrak m$ and the open fundamental sector
   \sigma_1(\pi)>0>\sigma_2(\pi),
   \qquad 1<R(\pi)<\rho.
 \]
+Choose once and for all a lower radial cutoff large enough to satisfy
+the hypotheses of Kai's corollary.  The finitely many prime elements
+below that cutoff contribute $O(1)$ and do not affect the asymptotic.
 Partition its projectivized interval into finitely many sufficiently
-small open thin-cone charts and sum.  The boundary contains no prime
-element away from the prime above $5$, by the preceding normalization.
+small open thin-cone charts, choosing the internal cut rays to contain
+no nonzero lattice point, and sum.  The two outer boundary rays contain
+no prime element away from the prime above $5$, by the preceding
+normalization.
 
 For each reduced class $u\in(\OK/\mathfrak m)^\times$, the resulting
 logarithmically weighted count has the form
@@ -1111,7 +1127,7 @@ Theorem~\ref{thm:prime-classification}, magnitude $2$ occurs exactly
 for the conjugate class pair $(1,1)$, whereas magnitude $1$ occurs for
 $(0,2)$ or $(2,0)$.  Consequently
 \[
-  I_1(X)=2P_2(X)+O(1).
+  I_1(X)=2P_2(X).
 \]
 Proposition~\ref{prop:iota-density} gives
 \[
@@ -1120,7 +1136,7 @@ Proposition~\ref{prop:iota-density} gives
 \]
 A magnitude-$1$ prime has one class-$0$ and one class-$2$ ideal, so
 \[
-  I_0(X)=I_2(X)=P_1(X)+O(1),
+  I_0(X)=I_2(X)=P_1(X),
 \]
 which gives the second asymptotic.  Equivalently,
 \[
@@ -1146,9 +1162,12 @@ exponents gives the exact identification, in Hickerson--Mortenson
 notation \cite{jHiMo14},
 $B=-f_{1,3,4}(X,-X^3,X)$.  The coefficient implementation was also
 checked through $N=200$.  The following statements are computational
-checks, not additional inputs to the proofs above.  The ranges and
-counts below are reproduced by the repository script
-\texttt{numerical\_audit.py}.
+checks, not additional inputs to the proofs above.  The aggregate cone and
+prime statistics below---the $19{,}617$ prime sweep, the $7{,}165$ pair
+sweep, the maximum coefficient, and the norm-supported zero count---are
+reproduced by the repository script \texttt{numerical\_audit.py}.  The
+three separate termwise, row-model, and ideal-level checks use their stated
+finite ranges.
 
 \begin{itemize}
 \item The motivating row-model factorization has been verified
@@ -1171,74 +1190,68 @@ cases $p=11,31,41,61,71,101$ can be checked by hand.
 distinct primes $p<q$, $p,q\equiv1\pmod{10}$, with
 $pq\leq10^6+1$ ($7165$ pairs),
 none satisfies $a(pq)=a(p)a(q)$.
-\item Through $N\leq10^5$ one has $\max_N|B_N|=7$, and among the
-indices in that range at which $10N+1$ is a norm there are $4904$
-with $B_N=0$, all of them composite values of $10N+1$; empirically
+\item Through $N\leq10^5$ one has $\max_N|B_N|=7$, and there are
+$4904$ levels in that range with at least one defining cone atom but
+$B_N=0$.  Every corresponding value of $10N+1$ is composite; empirically
 $|B_N|=O(d(10N+1))$.
 \end{itemize}
 
 \subsection{Lean scope}
 
 The accompanying Lean~4 development has no admitted lemmas in the
-finite algebraic and combinatorial layer it covers.  It checks the
-integer-coordinate algebra for $E$ and $\beta$, the norm identity, the
-coset congruences, the unit calculations
-($\eps L\cap L=\varnothing$, the $\eps^6$ stabilizer), the finite
-$\FF_4^\times$ arithmetic of $\lambda$ including the Frobenius half
-of the reflection identity, the mod-3 obstruction underlying
-nonvanishing (relative to sector labels, which enter the development
-as certificate inputs rather than as proved geometric facts), the
-explicit nonmultiplicativity witness $B_1=1$, $B_3=-2$, $B_{34}=3$,
-the resulting theorem
-\texttt{BCoeff\_not\_multiplicative\_witness}, and the completeness of three
-explicitly bounded atom enumerations.  The
-coefficient $B_{34}$ is checked by kernel evaluation; all of these results
-depend only on Lean's usual three axioms.
+algebraic, geometric, or finite prime-classification chain.  For every
+rational prime $p\equiv1\pmod {10}$ it constructs an element of
+$\ZZ[\phi]$ of norm $-p$, using quadratic reciprocity, a finite
+pigeonhole argument, and a sign correction by the fundamental unit.
+It classifies all norm-one units as $\pm\eps^m$, proves the two
+same-ideal classes represented by a generator and its conjugate, and
+constructs the unique integral sector normalization.  It also proves that the
+resulting $\iota$ value is unchanged when the norm-$-p$ generator is
+replaced by another generator in the same ideal class.  The geometric
+reflection is formalized with the exact transformed lift
+$-\ell-1$.
 
-{\sloppy
-Machine-checked additionally, in the modules
-\texttt{Ch10\_ConeRecognition}, \texttt{Ch10\_OneAtom},
-\texttt{Ch10\_SignCoherence}, and \texttt{Ch10\_PrimeBridge}
-(built on the project server with only the standard three axioms): the
-integral coordinate-sign form of the cone-recognition identities, the
-one-atom lemma in associate form (two cone atoms that are associates
-by $\pm\eps^m$ coincide), the conjugate-atom identity
-$-\eps\bar\alpha=\beta(r/2,2k)$ with its involution,
-cone-preservation, and evenness statements, and the bridge from atom
-counts to the coefficients --- the classification
-$a(p)\in\{-2,-1,1,2\}$ and nonvanishing, relative to explicit
-per-prime certificate data.\par}
+The Lean normalization uses the integral trace/window formulation.  Its
+equivalence with the real-embedding sector inequalities is the paper-level
+content of Proposition~\ref{prop:cone-recognition}, not a separate Lean
+endpoint.
 
-More precisely, \texttt{SectorCert x} contains only a label
-$\delta\in\ZZ/3\ZZ$; it does not certify the proposition
-\texttt{InSector $\delta$ x}.  A \texttt{SplitPrimeCert p} supplies a
-chosen generator $\pi$, primality and the congruence $p\equiv1\pmod
-{10}$, a norm equation $\N(\pi)=\pm p$, and the nonzero mod-$2$
-condition.  A \texttt{PrimeAtomCertificate} then supplies the common
-atom sign, the two finite sign-coherence fields, the two-atom bound,
-and the implications from a contributing iota class to an actual
-atom.  Lean proves the coefficient classification and nonvanishing
-from these data; it does not construct these certificates uniformly
-for every rational prime.
+The finite layer constructs a single finite type containing all cone
+atoms at level $(p-1)/10$.  It proves both directions of the bridge
+between the two ideal classes and the contribution predicate, proves
+that the two conjugate classes are distinct (the exceptional ramified
+prime $5$ being excluded by $p\equiv1\pmod {10}$), and obtains the
+exact indicator formula for the atom count.  The reflected classes
+contribute simultaneously exactly when $\iota=1$.  A coordinate-level
+conjugation theorem then proves equality of the full signed atom
+weights, not merely of their signs.  Consequently Lean proves, from
+only primality and $p\equiv1\pmod {10}$,
+\[
+ B_{(p-1)/10}\ne0,\qquad
+ B_{(p-1)/10}\in\{-2,-1,1,2\},\qquad
+ |B_{(p-1)/10}|=2\iff\iota(\mathfrak p)=1.
+\]
+The development also checks the explicit nonmultiplicativity witness
+$B_1=1$, $B_3=-2$, $B_{34}=3$ and the theorem
+\texttt{BCoeff\_not\_multiplicative\_witness}.
 
-Once these fields are supplied, the endpoint reduces to finite sign
-coherence, the bounds $1\leq\texttt{atomCount}\leq2$, and the
-coefficient bridge.  The primality and sector labels do not by
-themselves construct the certificate or add a global existence
-theorem.  Thus the Lean result is a conditional finite bookkeeping
-theorem, not a proof of prime nonvanishing without hypotheses.
-
-The following are \emph{not} formalized: the geometric sector theory
-of Section~\ref{sec:sectors} (including the geometric half of the
-reflection identity and the same-ideal-to-associate step, which uses
-class number one), the Hecke--Mitsui prime number theorem, the
-asymptotic density argument of Section~\ref{sec:density}, the uniform
-construction of \texttt{SplitPrimeCert} and
-\texttt{PrimeAtomCertificate} for every relevant prime, and a
-source-faithful bridge from Chan's missing kernel to $B$.  The present
-paper proves the finite algebraic consequences of the supplied
-certificates and keeps the remaining geometric, global-existence, and
-analytic inputs explicit.
+The axiom audit for these endpoints reports only Lean's standard
+\texttt{propext}, \texttt{Classical.\allowbreak choice}, and
+\texttt{Quot.\allowbreak sound};
+there are no project axioms or native-evaluation axioms.  The
+specialized Hecke--Mitsui prime-element theorem used in
+Section~\ref{sec:density} is not presently available in Mathlib and
+remains an explicit analytic hypothesis.  The Lean density module is a
+schematic consumer: given $1/12$ asymptotics for the six selected cells
+among the twelve reduced classes, together with the two exact equalities
+identifying the relevant ideal counts with the magnitude-one and
+magnitude-two rational-prime counts, it proves the resulting $1/6$,
+$1/12$, $1/3$, and $2/3$ constant arithmetic.  It does not define the
+concrete prime-ideal counting functions or prove those interface hypotheses.
+A
+source-faithful bridge from Chan's original missing kernel to the
+independently defined series $B$ is not formalized and is not used in
+the results stated here.
 
 %----------------------------------------------------------------------
 \section{Concluding remarks}\label{sec:conclusion}

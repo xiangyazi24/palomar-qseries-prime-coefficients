@@ -1,55 +1,69 @@
-# Q-series prime coefficients
+# Prime coefficients of a nonmultiplicative indefinite theta series
 
-This repository prepares a
-[Palomar](https://palomar-registry.org/) entry associated with
+This is the standalone public Lean 4 package for Xiang Huang's paper
 *Prime magnitudes and nonvanishing for a nonmultiplicative indefinite theta
-series over Q(sqrt(5))* by Xiang Huang.
+series over Q(sqrt(5))*.
 
-The repository is self-contained apart from its pinned Mathlib dependency. It
-contains the fifteen-file transitive proof closure extracted from the canonical
-internal development at commit
-`4c926778c1b8701e3b4d85ec44c33766da9f724b`, together with the signed paper
-snapshot in `paper/`.
+For the coefficient sequence `BCoeff` defined as the difference of two signed
+cone sums for the norm form over `Z[phi]`, the formalization proves:
+
+- the closed nonmultiplicativity witness
+  `BCoeff 34 != BCoeff 1 * BCoeff 3`;
+- for every rational prime `p` congruent to `1` modulo `10`, the coefficient
+  `BCoeff ((p - 1) / 10)` belongs to `{-2, -1, 1, 2}`;
+- every such prime has a golden integer of norm `-p`, and every norm-`-p`
+  generator has a strict integral fundamental-window normalization;
+- for every normalized generator, the coefficient has magnitude two exactly
+  when the geometric residue invariant `iota` is one modulo three;
+- this geometric invariant is unchanged under the explicitly defined signed
+  fundamental-unit orbit `y = +/- eps^m x`.
+
+The proof constructs the norm-negative generator, classifies the norm-one
+units, normalizes the real embeddings by integral descent, partitions the
+finite cone atoms into two distinct conjugate classes, counts them exactly,
+and proves their signed weights agree when both classes contribute. Thus the
+prime theorem is not conditional on a supplied per-prime certificate.
+
+The accompanying paper additionally derives relative densities `1/3` and
+`2/3` for coefficient magnitudes two and one from a specialized
+Hecke--Mitsui thin-cone prime theorem. That external analytic input and the
+paper's computational comparison with Chan's q-series kernel are not among the
+Lean declarations registered here.
 
 ## Registered statement surface
 
-`PalomarQseriesPrimeCoefficients/Public.lean` defines the Mathlib-only public
-surface, and `Challenge.lean` states two results over it:
+`Challenge.lean` imports only Mathlib and is 192 lines. It contains the public
+definitions and three theorem statements selected by `comparator.json`:
 
-- `BCoeff_not_multiplicative_witness` is the unconditional closed theorem
-  `BCoeff 34 != BCoeff 1 * BCoeff 3` for the explicitly defined coefficient
-  function;
-- `prime_coeff_classification` is a conditional finite certificate consumer.
-  Given a `SplitPrimeCert`, a `SectorCert` label, and a
-  `PrimeAtomCertificate` carrying sign coherence, the two-atom bound, and both
-  contribution-to-existence implications, it proves that the corresponding
-  coefficient belongs to `{-2, -1, 1, 2}`.
+- `PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness`;
+- `PalomarQseriesPrimeCoefficients.prime_BCoeff_complete_classification`;
+- `PalomarQseriesPrimeCoefficients.geometric_iota_eq_of_sameIdeal`.
 
-The certificate burden is deliberately visible in the Challenge. In
-particular, `SectorCert` contains only a `ZMod 3` label and does not certify
-geometric sector membership. The formalization does not uniformly construct
-these certificates for primes, prove the paper's sharper magnitude/iota
-equivalence through this endpoint, formalize the Hecke--Mitsui density
-argument, or identify this independently defined cone series with an older
-Chan-project source object. The redundant nonzero corollary is proved in the
-internal closure but is not a separate registered target.
+The name `sameIdeal` is local terminology for the displayed relation
+`y = +/- eps^m x`; the registered theorem does not identify that relation with
+Mathlib's `Associated` predicate or with equality of principal ideals.
+
+Palomar does not allow project-local source in the Challenge import closure.
+The marked public-definition block is therefore inline in `Challenge.lean` and
+duplicated byte-for-byte in the Solution-side
+`PalomarQseriesPrimeCoefficients/Public.lean`. The repository's drift check
+fails unless those two blocks are exactly equal.
 
 ## Repository map
 
-- `PalomarQseriesPrimeCoefficients/Public.lean`: shared Mathlib-only
-  coefficient and certificate surface.
-- `Challenge.lean`: the two public theorem statements over that surface.
-- `Solution.lean`: explicit type transports and proofs from the extracted
-  closure.
-- `QseriesFormalization/`: the fifteen-file substantive proof closure.
-- `paper/`: signed TeX source, bibliography, and compiled PDF.
-- `comparator.json`: declarations, definitions, and permitted axioms checked
-  by Comparator.
+- `Challenge.lean`: Mathlib-only definitions and the three statement holes.
+- `Solution.lean`: transports and proofs from the extracted development.
+- `PalomarQseriesPrimeCoefficients/Public.lean`: Solution-side copy of the
+  public statement definitions.
+- `QseriesFormalization/`: the 28-file transitive proof closure extracted from
+  the canonical internal development at commit
+  `95573179f143e85dfc551d896fe9be6ca472250e`.
+- `paper/`: signed TeX source, bibliography, and compiled 16-page PDF.
+- `comparator.json`: the three compared declarations and permitted axioms.
 - `formalization.yaml`: scope, provenance, automation, fidelity, and review.
 
-This standalone repository and its fixed commit will be the authoritative
-public source for the Palomar entry; the internal development is not a build
-dependency.
+This repository is the substantive, self-contained public source for the
+Palomar entry; the private development is not a build dependency.
 
 ## Verification
 
@@ -58,11 +72,17 @@ Run the full checks on Linux:
 ```text
 lake exe cache get
 lake build
+lake env lean AxiomAudit.lean
+./scripts/verify-public-surface.sh
 ruby scripts/validate-formalization.rb
 ./test/landrun_wrapper_test.sh
-./test/validate_formalization_test.rb
+ruby test/validate_formalization_test.rb
 ./scripts/verify-comparator.sh
 ```
 
-After the repository is publicly frozen, its exact commit can be sent through
-[Palomar's submission form](https://submit.palomar-registry.org/).
+The final command runs pinned Comparator, Lean's kernel export, NanoDa replay,
+and the Landrun policy wrapper. Palomar independently forces NanoDa during its
+own verification.
+
+After a public commit is frozen and checked, its full SHA can be sent through
+[Palomar's submission service](https://submit.palomar-registry.org/).

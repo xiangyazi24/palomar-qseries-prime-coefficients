@@ -33,6 +33,8 @@ jobs:
       - name: Reject retained template values in a derived repository
         if: github.repository != 'PalomarRegistry/PalomarTemplate'
         run: ruby scripts/validate-formalization.rb
+      - name: Check the duplicated public statement surface
+        run: ./scripts/verify-public-surface.sh
       - name: Detect the repository licence
         run: |
           bundle exec licensee detect LICENSE --json --no-packages --no-readme > "$RUNNER_TEMP/license.json"
@@ -95,6 +97,8 @@ jobs:
       - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
         with:
           build: true
+      - name: Print the selected and supporting axiom closures
+        run: lake env lean AxiomAudit.lean
 
   docs:
     name: Build API documentation

@@ -2,11 +2,17 @@
 version: "v0.4"
 
 project:
-  name: "Prime coefficients of a nonmultiplicative indefinite theta series"
+  name: "Prime magnitudes and nonvanishing for a nonmultiplicative indefinite theta series over Q(sqrt(5))"
   description: >-
-    A Lean 4 verification of an unconditional finite nonmultiplicativity
-    witness and a conditional finite-certificate classification of prime-index
-    coefficients for an indefinite theta series over Q(sqrt(5)).
+    For an explicitly defined difference B of two signed cone theta series over
+    Q(sqrt(5)), Lean proves a closed nonmultiplicativity witness and a complete
+    prime-index classification. For every rational prime p congruent to 1
+    modulo 10, B((p-1)/10) is one of -2, -1, 1, 2; a norm-negative golden
+    integer generator and its strict fundamental-window normalization exist;
+    and the coefficient has magnitude two exactly when the resulting geometric
+    residue invariant is one modulo three. The invariant is also proved
+    independent of the generator within the explicitly defined signed
+    fundamental-unit orbit.
   authors:
     - "Xiang Huang"
   license: "Apache-2.0"
@@ -21,95 +27,146 @@ sources:
   - title: "Prime magnitudes and nonvanishing for a nonmultiplicative indefinite theta series over Q(sqrt(5))"
     authors:
       - "Xiang Huang"
-    type: paper
-    relationship: formalizes
+    type: original-proof
+    location: "paper/paper3.pdf, Theorems 3.3 and 6.5 and Proposition 5.2"
+    relationship: other
+    author_endorsement: participated
     note: >-
-      The registered declarations formalize the closed nonmultiplicativity
-      witness and the finite conditional coefficient classifier. Uniform prime
-      certificate construction, geometric sector results, and density
-      asymptotics remain manuscript mathematics outside the registered scope.
+      The paper and this formalization were developed together. The registered
+      declarations cover the finite algebraic and geometric prime theorem, not
+      the paper's external analytic density input.
   - title: "Ramanujan's cubic continued fraction and an analog of his most beautiful identity"
     authors:
       - "Hei-Chi Chan"
     id: "doi:10.1142/S1793042110003150"
     type: paper
-    location: "https://doi.org/10.1142/S1793042110003150"
+    location: "International Journal of Number Theory 6 (2010), 673-680"
     relationship: background
+    author_endorsement: not-contacted
     note: >-
       Chan's tenth-order dissection supplies the motivating q-series context.
-      No source-faithfulness theorem from that project to BCoeff is registered.
+      No theorem identifying the present cone coefficient with that source
+      kernel is selected for Comparator.
+  - title: "Notes on Mitsui's Prime Number Theorem with Siegel zeros"
+    authors:
+      - "Wataru Kai"
+    id: "arXiv:2209.11816v2"
+    type: paper
+    location: "Corollary 4.2.3"
+    relationship: background
+    author_endorsement: not-contacted
+    note: >-
+      This is the external thin-cone prime-element theorem used only for the
+      manuscript's density corollary; it is not a dependency of the three
+      registered Lean declarations.
 
 related_formalizations: []
 
 status:
   scope: >-
-    Comparator checks two declarations. The first proves the closed inequality
-    BCoeff(34) != BCoeff(1) * BCoeff(3). The second proves four-valuedness of
-    BCoeff((p-1)/10) from an explicit SplitPrimeCert, a ZMod-3 SectorCert label,
-    and a PrimeAtomCertificate containing the stated finite sign, atom-bound,
-    and contribution-to-existence fields.
+    Comparator checks three declarations: a closed nonmultiplicativity
+    witness; an unconditional four-value prime classification together with
+    norm-negative generator existence, geometric normalization for every such
+    generator, and the universal magnitude/iota equivalence; and invariance of
+    geometric iota under the exact signed fundamental-unit orbit relation.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: [propext, Classical.choice, Quot.sound]
+  main_results:
+    - declaration: "PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+      comparator_config: "comparator.json"
+    - declaration: "PalomarQseriesPrimeCoefficients.prime_BCoeff_complete_classification"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+      comparator_config: "comparator.json"
+    - declaration: "PalomarQseriesPrimeCoefficients.geometric_iota_eq_of_sameIdeal"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+      comparator_config: "comparator.json"
 
 automation:
   methods:
     - method: agent
-      models: ["Claude", "ChatGPT", "OpenAI Codex"]
-      framework: "Lean 4 with remote build and multi-model review"
+      models: ["OpenAI Codex", "Claude Fable", "ChatGPT"]
+      framework: "Codex, Claude Code, and the ChatGPT web bridge"
       tool_setup: >-
-        AI-assisted proof development, statement comparison, explicit
-        structure transport, dependency auditing, clean Linux builds, and
-        axiom inspection under human direction.
+        AI-assisted proof development and independent review, with every
+        retained declaration checked by Lean 4.30 on a Linux build host.
+        Comparator, NanoDa, statement-drift, source-closure, and axiom audits
+        are run separately from model review.
       cost:
-        wall_time: "not reconstructed"
-        spend_usd: "subscription-based"
+        wall_time: "multi-session research and formalization"
+        spend_usd: "subscription-based usage"
         hardware: "Mac mini orchestration and uisai2 Linux verification"
       prompting_notes: >-
-        Agents proposed and reviewed proof steps; every retained declaration
-        is checked by Lean and the advertised theorem surface is axiom-audited.
-  spend_usd: "subscription-based"
+        Models were asked to attack proof gaps, compare exact theorem types,
+        audit the manuscript's finite and analytic layers separately, and look
+        for vacuity, hidden hypotheses, import-policy violations, and
+        overstatement. The coordinator reproduced retained arguments in Lean
+        and owned the final source.
+  spend_usd: "subscription-based usage"
   notes: >-
-    The submission record retains only claims supported by the pinned public
-    source and Comparator result.
+    Model agreement was not treated as proof evidence; the Lean kernel,
+    Comparator, NanoDa, exact source checks, and paper/source audits were
+    separate gates.
 
 fidelity:
   divergences: >-
-    The prime classifier is conditional on supplied certificate records. In
-    particular, SectorCert contains only a ZMod-3 label, while
-    PrimeAtomCertificate supplies sign coherence, a two-atom bound, and both
-    atom-existence implications. The formalization does not construct these
-    records uniformly for primes, formalize geometric sector membership,
-    prove the manuscript's magnitude-two iff iota-one criterion through this
-    endpoint, establish Hecke--Mitsui density asymptotics, or prove a
-    source-faithful bridge from Chan's missing-kernel expression to BCoeff.
+    The registered Lean surface covers the paper's finite algebraic and
+    geometric prime theorem. It does not formalize the specialized
+    Hecke--Mitsui prime-element asymptotic, the resulting density corollary, or
+    the computational Chan-kernel comparison. The public relation named
+    sameIdeal is exactly y = +/- eps^m x; no claim equates it with Mathlib
+    Associated or with principal-ideal equality. The invariant determines the
+    coefficient magnitude, not its sign.
 
 review:
   status: "agent-reviewed"
   reviewers:
-    - "OpenAI Codex"
+    - "OpenAI Codex (Sol Max)"
+    - "Claude Fable"
+    - "ChatGPT"
   notes: >-
-    The extracted closure, manuscript, and public Challenge/Solution surface
-    are undergoing exact-commit independent review before publication.
+    Sol Max reported PASS on the full Lean/manuscript audit. Claude Fable's
+    independent cold audit passed after its findings were repaired; a later
+    post-fix rerun was unavailable because its quota was exhausted. ChatGPT
+    independently reviewed the density specialization, the nonvacuous public
+    theorem surface, the Challenge import architecture, the signed-unit orbit
+    theorem, the metadata scope, and the strict-window obstruction. All final
+    declarations are subject to exact-commit kernel and Comparator checks.
 
 alignment:
   namespace: "PalomarQseriesPrimeCoefficients"
   statements:
-    - source: "Paper, Theorem: Nonmultiplicativity"
+    - source: "Paper, Theorem 3.3: nonmultiplicativity"
       lean: "PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness"
       module: "Challenge"
       status: proved
       note: >-
-        Uses the actual finite coefficient function at indices 1, 3, and 34;
-        it is not the older scalar integer inequality.
-    - source: "Paper, conditional finite prime-coefficient classifier"
-      lean: "PalomarQseriesPrimeCoefficients.prime_coeff_classification"
+        Uses the exact coefficient function at indices 1, 3, and 34.
+    - source: "Paper, Theorem 6.5: prime coefficient classification"
+      lean: "PalomarQseriesPrimeCoefficients.prime_BCoeff_complete_classification"
       module: "Challenge"
       status: proved
       note: >-
-        Proves membership in {-2,-1,1,2} only after all three dependent
-        certificate arguments are supplied.
+        Combines four-value membership, norm-negative generator existence,
+        geometric normalization for every generator, and the certificate-
+        uniform magnitude/iota equivalence for every prime p = 1 modulo 10.
+    - source: "Paper, Proposition 5.2: generator independence"
+      lean: "PalomarQseriesPrimeCoefficients.geometric_iota_eq_of_sameIdeal"
+      module: "Challenge"
+      status: proved
+      note: >-
+        The relation is the explicit signed epsilon-power orbit defined in the
+        Challenge; the statement intentionally makes no broader ideal-theory
+        identification.
 
 acknowledgements: >-
-  Mathlib and Lean provide the formal foundation. Chan's q-series identity
-  supplies the motivating dissection context.
+  Mathlib and Lean provide the formal foundation. Chan's q-series identity is
+  the motivating background, and Kai's form of Mitsui's theorem supplies the
+  manuscript's external analytic density input.

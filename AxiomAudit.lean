@@ -1,4 +1,11 @@
 import Solution
 
 #print axioms PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness
-#print axioms PalomarQseriesPrimeCoefficients.prime_coeff_classification
+#print axioms PalomarQseriesPrimeCoefficients.prime_BCoeff_complete_classification
+#print axioms PalomarQseriesPrimeCoefficients.geometric_iota_eq_of_sameIdeal
+
+#print axioms QseriesFormalization.Ch10.prime_BCoeff_ne_zero_unconditional
+#print axioms QseriesFormalization.Ch10.prime_BCoeff_four_values_unconditional
+#print axioms QseriesFormalization.Ch10.prime_BCoeff_natAbs_eq_two_iff_iota_one_unconditional
+#print axioms QseriesFormalization.Ch10.exists_prime_BCoeff_iota_classification
+#print axioms QseriesFormalization.Ch10.geometric_iota_eq_of_sameIdeal

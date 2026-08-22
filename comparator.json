@@ -3,7 +3,8 @@
   "solution_module": "Solution",
   "theorem_names": [
     "PalomarQseriesPrimeCoefficients.BCoeff_not_multiplicative_witness",
-    "PalomarQseriesPrimeCoefficients.prime_coeff_classification"
+    "PalomarQseriesPrimeCoefficients.prime_BCoeff_complete_classification",
+    "PalomarQseriesPrimeCoefficients.geometric_iota_eq_of_sameIdeal"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

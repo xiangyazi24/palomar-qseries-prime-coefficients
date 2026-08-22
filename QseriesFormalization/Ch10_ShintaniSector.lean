@@ -45,13 +45,13 @@ theorem eps_maps_shB2_to_shB3 : PhiInt.eps * shB2 = shB3 := by
 theorem detPhi_eps_left (u v : PhiInt) :
     detPhi (PhiInt.eps * u) v =
       (u.a + u.b) * v.b - (u.a + 2 * u.b) * v.a := by
-  simp only [detPhi, PhiInt.mul_a, PhiInt.mul_b, PhiInt.eps, PhiInt.mk_a, PhiInt.mk_b]
+  simp only [detPhi, PhiInt.mul_a, PhiInt.mul_b, PhiInt.eps]
   ring
 
 theorem detPhi_eps_right (u v : PhiInt) :
     detPhi u (PhiInt.eps * v) =
       u.a * (v.a + 2 * v.b) - u.b * (v.a + v.b) := by
-  simp only [detPhi, PhiInt.mul_a, PhiInt.mul_b, PhiInt.eps, PhiInt.mk_a, PhiInt.mk_b]
+  simp only [detPhi, PhiInt.mul_a, PhiInt.mul_b, PhiInt.eps]
   ring
 
 theorem detPhi_eps_both (u v : PhiInt) :

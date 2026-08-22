@@ -3,15 +3,18 @@ import Mathlib
 /-!
 # Public coefficient and certificate surface
 
-This module contains the Mathlib-only definitions shared by the Palomar
-Challenge and Solution. Keeping one compiled public surface makes Comparator
-check the exact same definitions independently of import-order-sensitive type
-class elaboration in the proof module.
+This Solution-side module contains the fixed mathematical definitions used in
+the compared statements.  Palomar forbids project-local imports in the
+Challenge closure, so `Challenge.lean` contains a byte-for-byte duplicate of
+the marked definition block below.  Comparator checks the resulting exported
+declarations, and the repository validator separately checks textual drift.
 -/
 
 namespace PalomarQseriesPrimeCoefficients
 
 noncomputable section
+
+/-! ## BEGIN PUBLIC STATEMENT DEFINITIONS -/
 
 /-! ## The coefficient sequence -/
 
@@ -41,7 +44,7 @@ def DCoeff (N : Nat) : Int :=
 /-- Difference of the two norm-theta cones. -/
 def BCoeff (N : Nat) : Int := DCoeff N + ACoeff N
 
-/-! ## Finite prime-certificate data -/
+/-! ## Golden integers and the geometric sector invariant -/
 
 /-- An element `a + b phi` of the golden integer lattice. -/
 @[ext]
@@ -52,11 +55,24 @@ structure PhiInt where
 
 namespace PhiInt
 
+instance : Zero PhiInt := ⟨⟨0, 0⟩⟩
+instance : One PhiInt := ⟨⟨1, 0⟩⟩
+instance : Add PhiInt := ⟨fun x y => ⟨x.a + y.a, x.b + y.b⟩⟩
+instance : Neg PhiInt := ⟨fun x => ⟨-x.a, -x.b⟩⟩
+instance : Sub PhiInt := ⟨fun x y => ⟨x.a - y.a, x.b - y.b⟩⟩
+instance : Mul PhiInt :=
+  ⟨fun x y =>
+    ⟨x.a * y.a + x.b * y.b,
+     x.a * y.b + x.b * y.a + x.b * y.b⟩⟩
+
 /-- The algebraic norm in the basis `1, phi`. -/
 def norm (x : PhiInt) : Int := x.a ^ 2 + x.a * x.b - x.b ^ 2
 
 /-- Galois conjugation. -/
 def star (x : PhiInt) : PhiInt := ⟨x.a + x.b, -x.b⟩
+
+/-- The norm-one fundamental unit `1 + phi`. -/
+def eps : PhiInt := ⟨1, 1⟩
 
 end PhiInt
 
@@ -71,62 +87,72 @@ def discreteLog (x : ZMod 2 × ZMod 2) : ZMod 3 :=
   else if x = (0, 1) then 2
   else 0
 
-/-- A supplied `ZMod 3` sector label. It has no geometric membership field. -/
+/-- The residue label induced by an integral sector lift. -/
 structure SectorCert (x : PhiInt) where
   δ : ZMod 3
 
+/-- The finite residue-class logarithm of a golden integer modulo two. -/
 def lambdaOf (x : PhiInt) : ZMod 3 := discreteLog (toF4 x)
 
+/-- The sector-minus-residue class in `ZMod 3` governing prime magnitude. -/
 def iotaCert (x : PhiInt) (c : SectorCert x) : ZMod 3 :=
   c.δ - lambdaOf x
 
-def reflectedSectorCert (x : PhiInt) (c : SectorCert x) :
-    SectorCert (PhiInt.star x) where
-  δ := -c.δ - 1
+/-! The next definitions are the integral, not real-analytic, formulation of
+the canonical fundamental sector. -/
 
-def Contributes (x : PhiInt) (c : SectorCert x) : Prop :=
-  iotaCert x c ≠ 2
+/-- Twice the first real embedding of `a + b phi`, with denominators cleared. -/
+def Tr (x : PhiInt) : Int := 2 * x.a + x.b
 
-/-- Explicit split-prime generator data consumed by the classifier. -/
-structure SplitPrimeCert (p : Nat) where
-  π : PhiInt
-  hp : Nat.Prime p
-  hp10 : p % 10 = 1
-  hnorm : PhiInt.norm π = (p : Int) ∨ PhiInt.norm π = -(p : Int)
-  hmod2 : toF4 π ≠ (0, 0)
+/-- A cleared-denominator form of the second fundamental-window coordinate. -/
+def windowComp (x : PhiInt) : Int := x.b - 3 * x.a
 
-def AAtoms (N : Nat) : Finset (Nat × Nat) :=
-  ((Finset.range (N + 1) ×ˢ Finset.range (2 * N + 2)).filter
-    (fun q => E (↑q.1) (↑q.2) = ↑N))
+/-- Multiplication by `eps = 1 + phi` in coordinates. -/
+def epsMul (x : PhiInt) : PhiInt :=
+  ⟨x.a + x.b, x.a + 2 * x.b⟩
 
-def DAtoms (N : Nat) : Finset (Nat × Nat) :=
-  ((Finset.range (N + 1) ×ˢ Finset.range (2 * N + 2)).filter
-    (fun q => E (-((↑q.1 : Int) + 1)) (-((↑q.2 : Int) + 1)) = ↑N))
+/-- Multiplication by `eps^{-1} = 2 - phi` in coordinates. -/
+def epsInvMul (x : PhiInt) : PhiInt :=
+  ⟨2 * x.a - x.b, -x.a + x.b⟩
 
-def AAtomWeight (q : Nat × Nat) : Int :=
-  -negOnePowInt (↑q.2)
+/-- Iterated multiplication by the fundamental unit `eps`. -/
+def epsNatMul : Nat → PhiInt → PhiInt
+  | 0, x => x
+  | n + 1, x => epsMul (epsNatMul n x)
 
-def DAtomWeight (q : Nat × Nat) : Int :=
-  negOnePowInt (-((↑q.2 : Int) + 1))
+/-- Iterated multiplication by the inverse fundamental unit. -/
+def epsInvNatMul : Nat → PhiInt → PhiInt
+  | 0, x => x
+  | n + 1, x => epsInvMul (epsInvNatMul n x)
 
-def atomCount (N : Nat) : Nat := (AAtoms N).card + (DAtoms N).card
+/-- The action of the integral power `eps^m`. -/
+def epsZPowMul : Int → PhiInt → PhiInt
+  | Int.ofNat n, x => epsNatMul n x
+  | Int.negSucc n, x => epsInvNatMul (n + 1) x
 
-/--
-The finite hypotheses needed to turn the two conjugate prime labels into a
-coefficient classification. The record supplies sign coherence, the two-atom
-bound, and both contribution-to-existence implications.
--/
-structure PrimeAtomCertificate {p : Nat} (sp : SplitPrimeCert p)
-    (c : SectorCert sp.π) where
-  sign : Int
-  all_A : ∀ q ∈ AAtoms ((p - 1) / 10), AAtomWeight q = sign
-  all_D : ∀ q ∈ DAtoms ((p - 1) / 10), DAtomWeight q = sign
-  one_atom_bound : atomCount ((p - 1) / 10) ≤ 2
-  atom_of_left_contributes :
-    Contributes sp.π c → 0 < atomCount ((p - 1) / 10)
-  atom_of_right_contributes :
-    Contributes (PhiInt.star sp.π) (reflectedSectorCert sp.π c) →
-      0 < atomCount ((p - 1) / 10)
+/-- Association by a signed norm-one unit. -/
+def sameIdeal (x y : PhiInt) : Prop :=
+  ∃ (m : Int) (negative : Bool),
+    y = match negative with
+      | false => epsZPowMul m x
+      | true => -(epsZPowMul m x)
+
+/-- The two strict fundamental-window coordinates have the same nonzero sign. -/
+def SameWindowSign (x : PhiInt) : Prop :=
+  (0 < Tr x ∧ 0 < windowComp x) ∨
+  (Tr x < 0 ∧ windowComp x < 0)
+
+/-- An actual integral fundamental-window normalization. -/
+structure GeometricSectorCert (x : PhiInt) where
+  lift : Int
+  normalized : SameWindowSign (epsZPowMul (-lift) x)
+
+/-- Forget the geometric inequalities while retaining the lift modulo three. -/
+def GeometricSectorCert.toSectorCert {x : PhiInt}
+    (c : GeometricSectorCert x) : SectorCert x :=
+  ⟨(c.lift : ZMod 3)⟩
+
+/-! ## END PUBLIC STATEMENT DEFINITIONS -/
 
 end
 end PalomarQseriesPrimeCoefficients

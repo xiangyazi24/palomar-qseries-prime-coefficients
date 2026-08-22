@@ -71,7 +71,7 @@ theorem conjAtom_weight_eq (k t : Int) (h : InCones k (2 * t)) :
       rcases hA' with ⟨ht, hk⟩
       rcases hbad with ⟨ht', hk'⟩
       omega
-    simp [BWeight, hA, hA', hD, hD', negOnePowInt_two_mul]
+    simp [BWeight, hA, hA']
   · have hD' := (conjAtom_DCone_iff k t).mp hD
     have hA : ¬ InACone k (2 * t) := by
       intro hbad
@@ -83,7 +83,7 @@ theorem conjAtom_weight_eq (k t : Int) (h : InCones k (2 * t)) :
       rcases hD' with ⟨ht, hk⟩
       rcases hbad with ⟨ht', hk'⟩
       omega
-    simp [BWeight, hA, hA', hD, hD', negOnePowInt_two_mul]
+    simp [BWeight, hA, hA', hD, hD']
 
 /-- The residue class of `phi` in the chosen `F_4` coordinates. -/
 def phiF4 : ZMod 2 × ZMod 2 := (0, 1)

@@ -4,9 +4,9 @@ import Mathlib.Data.ZMod.Basic
 /-!
 # Ch10: Split-prime certificates
 
-This file keeps the hard split-prime existence input explicit as a certificate.
-The downstream mod-2 and bad-class consequences are proved unconditionally from
-that certificate.
+This file defines the split-prime certificate interface and proves its mod-2
+and bad-class consequences.  `Ch10_SplitPrimeExistence` constructs the
+certificate for every rational prime congruent to one modulo ten.
 -/
 
 namespace QseriesFormalization
@@ -83,10 +83,10 @@ theorem splitPrimeCert_at_least_one_contributes
   at_least_one_contributes sp.π c sp.hmod2
 
 /--
-Atom-level nonvanishing for a split-prime generator certificate.  The current
-Ch10 infrastructure proves that one conjugate avoids the bad iota class; the
-separate bridge from such an atom to an actual `BCoeff N ≠ 0` statement is not
-present in the imported files.
+Legacy certificate-level contribution disjunction.  The unconditional
+coefficient nonvanishing theorem now lives in `Ch10_PrimeCoefficientTheorem`;
+this declaration is retained for compatibility with the older conditional
+interface.
 -/
 theorem B_coeff_ne_zero_at_split_prime
     {p : Nat} (sp : SplitPrimeCert p) (c : SectorCert sp.π) :

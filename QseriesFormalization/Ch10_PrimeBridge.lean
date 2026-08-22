@@ -76,12 +76,16 @@ theorem DAtomWeight_eq_one_or_neg_one (q : Nat × Nat) :
     negOnePowInt_eq_one_or_neg_one (-((↑q.2 : Int) + 1))
 
 /--
-Finite certificate for the missing ideal-to-coefficient bridge.
+Historical finite certificate for the conditional ideal-to-coefficient bridge.
 
 `one_atom_bound` is the finite form of one-atom uniqueness (at most one atom
 for each of the two conjugate ideals).  `all_A` and `all_D` are the finite form
 of sign coherence.  The last two fields turn either good iota class into an
 actual atom in the defining finite sets.
+
+The unconditional Paper 3 chain no longer uses this structure; it constructs
+the finite atoms and proves these properties in the downstream `Ch10_Prime*`
+modules.
 -/
 structure PrimeAtomCertificate {p : Nat} (sp : SplitPrimeCert p)
     (c : SectorCert sp.π) where
@@ -118,7 +122,7 @@ theorem prime_coeff_classification {p : Nat} (sp : SplitPrimeCert p)
         Finset.not_nonempty_iff_eq_empty.mp hA
       have hD0 : DAtoms ((p - 1) / 10) = ∅ :=
         Finset.not_nonempty_iff_eq_empty.mp hD
-      simpa [atomCount, hA0, hD0] using hpos
+      simp [atomCount, hA0, hD0] at hpos
   have hsign : atoms.sign = 1 ∨ atoms.sign = -1 := by
     rcases hnonempty with ⟨q, hq⟩ | ⟨q, hq⟩
     · have hqsign := atoms.all_A q hq
