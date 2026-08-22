@@ -29,19 +29,19 @@ def E (k r : Int) : Int :=
 def negOnePowInt (n : Int) : Int :=
   if n % 2 = 0 then 1 else -1
 
-/-- Positive-cone coefficient. -/
+/-- The A-cone contribution to `B_N`, including the outer minus sign. -/
 def ACoeff (N : Nat) : Int :=
   ((Finset.range (N + 1) ×ˢ Finset.range (2 * N + 2)).filter
     (fun p => E (↑p.1) (↑p.2) = ↑N)).sum
     (fun p => -negOnePowInt (↑p.2))
 
-/-- Negative-cone coefficient in translated natural coordinates. -/
+/-- The D-cone contribution to `B_N` in translated natural coordinates. -/
 def DCoeff (N : Nat) : Int :=
   ((Finset.range (N + 1) ×ˢ Finset.range (2 * N + 2)).filter
     (fun p => E (-(↑p.1 + 1)) (-(↑p.2 + 1)) = ↑N)).sum
     (fun p => negOnePowInt (-(↑p.2 + 1)))
 
-/-- Difference of the two norm-theta cones. -/
+/-- The manuscript coefficient `B_N`: D-cone sum minus A-cone sum. -/
 def BCoeff (N : Nat) : Int := DCoeff N + ACoeff N
 
 /-! ## Golden integers and the geometric sector invariant -/
@@ -71,7 +71,7 @@ def norm (x : PhiInt) : Int := x.a ^ 2 + x.a * x.b - x.b ^ 2
 /-- Galois conjugation. -/
 def star (x : PhiInt) : PhiInt := ⟨x.a + x.b, -x.b⟩
 
-/-- The norm-one fundamental unit `1 + phi`. -/
+/-- The fundamental totally positive unit `eps = 1 + phi = phi^2`, of norm one. -/
 def eps : PhiInt := ⟨1, 1⟩
 
 end PhiInt
@@ -80,21 +80,26 @@ end PhiInt
 def toF4 (x : PhiInt) : ZMod 2 × ZMod 2 :=
   (↑x.a, ↑x.b)
 
-/-- A label for the three nonzero residue classes modulo two. -/
+/-- The exponent label of the three nonzero mod-two residue classes;
+the zero class is totalized to `0`. -/
 def discreteLog (x : ZMod 2 × ZMod 2) : ZMod 3 :=
   if x = (1, 0) then 0
   else if x = (1, 1) then 1
   else if x = (0, 1) then 2
   else 0
 
-/-- The residue label induced by an integral sector lift. -/
+/-- A sector residue label in `ZMod 3`, indexed by `x`;
+this structure alone does not certify a geometric lift. -/
 structure SectorCert (x : PhiInt) where
   δ : ZMod 3
 
-/-- The finite residue-class logarithm of a golden integer modulo two. -/
+/-- The corresponding totalized mod-two residue label of a golden integer;
+on nonzero reduction it is the discrete logarithm to base `eps`. -/
 def lambdaOf (x : PhiInt) : ZMod 3 := discreteLog (toF4 x)
 
-/-- The sector-minus-residue class in `ZMod 3` governing prime magnitude. -/
+/-- The formal sector-minus-residue value `c.δ - lambdaOf x` in `ZMod 3`.
+For labels obtained from a geometric certificate at an admissible prime,
+the selected theorem relates value `1` to coefficient magnitude `2`. -/
 def iotaCert (x : PhiInt) (c : SectorCert x) : ZMod 3 :=
   c.δ - lambdaOf x
 
@@ -104,7 +109,7 @@ the canonical fundamental sector. -/
 /-- The field trace of `a + b phi`, namely `2a + b`. -/
 def Tr (x : PhiInt) : Int := 2 * x.a + x.b
 
-/-- A cleared-denominator form of the second fundamental-window coordinate. -/
+/-- The second integral fundamental-window coordinate `b - 3a`. -/
 def windowComp (x : PhiInt) : Int := x.b - 3 * x.a
 
 /-- Multiplication by `eps = 1 + phi` in coordinates. -/
