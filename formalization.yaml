@@ -44,9 +44,20 @@ sources:
     relationship: background
     author_endorsement: not-contacted
     note: >-
-      Chan's tenth-order dissection supplies the motivating q-series context.
-      No theorem identifying the present cone coefficient with that source
-      kernel is selected for Comparator.
+      Chan's cubic-continued-fraction and q-series work supplies motivating
+      background. No theorem identifying the present cone coefficient with a
+      Chan kernel is selected for Comparator.
+  - title: "An Invitation to q-Series: From Jacobi's Triple Product Identity to Ramanujan's 'Most Beautiful Identity'"
+    authors:
+      - "Hei-Chi Chan"
+    type: book
+    location: "World Scientific, 2011"
+    relationship: background
+    author_endorsement: not-contacted
+    note: >-
+      Cited together with Chan 2010 in paper/paper3.tex for the Theta_10
+      dissection that motivated the row-model calculations. The manuscript
+      does not claim a source-faithful identification of that kernel with B.
   - title: "Notes on Mitsui's Prime Number Theorem with Siegel zeros"
     authors:
       - "Wataru Kai"
@@ -60,7 +71,15 @@ sources:
       manuscript's density corollary; it is not a dependency of the three
       registered Lean declarations.
 
-related_formalizations: []
+related_formalizations:
+  - id: "xiangyazi24/Q-series-and-Chan-s-work"
+    relationship: other
+    note: >-
+      Private canonical Lean development from which the 28-file
+      QseriesFormalization/ transitive proof closure in this public submission
+      was extracted at commit
+      95573179f143e85dfc551d896fe9be6ca472250e. It is not a build dependency;
+      this public repository contains the copied substantive proof closure.
 
 status:
   scope: >-
