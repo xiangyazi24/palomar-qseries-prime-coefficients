@@ -7,7 +7,9 @@ series over Q(sqrt(5))*.
 For the coefficient sequence `BCoeff` defined as the difference of two signed
 cone sums for the norm form over `Z[phi]`, the formalization proves:
 
-- the closed nonmultiplicativity witness
+- under the manuscript reindexing
+  `a(M) = BCoeff ((M - 1) / 10)` for `M % 10 = 1`, the closed
+  nonmultiplicativity witness `a(341) != a(11) * a(31)`, equivalently
   `BCoeff 34 != BCoeff 1 * BCoeff 3`;
 - for every rational prime `p` congruent to `1` modulo `10`, the coefficient
   `BCoeff ((p - 1) / 10)` belongs to `{-2, -1, 1, 2}`;
