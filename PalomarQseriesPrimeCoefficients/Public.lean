@@ -101,7 +101,7 @@ def iotaCert (x : PhiInt) (c : SectorCert x) : ZMod 3 :=
 /-! The next definitions are the integral, not real-analytic, formulation of
 the canonical fundamental sector. -/
 
-/-- Twice the first real embedding of `a + b phi`, with denominators cleared. -/
+/-- The field trace of `a + b phi`, namely `2a + b`. -/
 def Tr (x : PhiInt) : Int := 2 * x.a + x.b
 
 /-- A cleared-denominator form of the second fundamental-window coordinate. -/
